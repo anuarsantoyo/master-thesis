@@ -1,0 +1,19 @@
+"Aldersgruppe";"Vaccinationsstatus";"Antal nyindlagte";"Befolkningstørrelse";"Nyindlagte pr. 100.000"
+12-15;Ikke vaccineret;8;52722;15,17
+12-15;Påbegyndt vaccinationsforløb;3;10097;29,71
+12-15;Forventet fuld effekt;35;235784;14,84
+16-19;Ikke vaccineret;15;28088;53,40
+16-19;Påbegyndt vaccinationsforløb;2;4859;41,16
+16-19;Forventet fuld effekt;45;246568;18,25
+20-39;Ikke vaccineret;141;243739;57,85
+20-39;Påbegyndt vaccinationsforløb;25;32746;76,35
+20-39;Forventet fuld effekt;299;1218459;24,54
+40-64;Ikke vaccineret;66;133041;49,61
+40-64;Påbegyndt vaccinationsforløb;8;12386;64,59
+40-64;Forventet fuld effekt;335;1761731;19,02
+65-79;Ikke vaccineret;24;25521;94,04
+65-79;Påbegyndt vaccinationsforløb;3;2127;141,04
+65-79;Forventet fuld effekt;190;860387;22,08
+80+;Ikke vaccineret;21;7886;266,29
+80+;Påbegyndt vaccinationsforløb;1;869;115,07
+80+;Forventet fuld effekt;179;251908;71,06

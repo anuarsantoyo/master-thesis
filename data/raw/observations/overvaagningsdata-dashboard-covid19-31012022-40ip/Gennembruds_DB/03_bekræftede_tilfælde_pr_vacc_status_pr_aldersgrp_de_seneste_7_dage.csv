@@ -1,0 +1,19 @@
+"Aldersgruppe";"Vaccinationsstatus";"Bekræftede tilfælde";"Befolkningstørrelse";"Bekræftede tilfælde pr. 100.000"
+12-15;Forventet fuld effekt;25858;235784;10966,82
+12-15;Ikke vaccineret;4897;52722;9288,34
+12-15;Påbegyndt vaccinationsforløb;1049;10097;10389,22
+16-19;Forventet fuld effekt;18686;246568;7578,44
+16-19;Ikke vaccineret;1601;28088;5699,94
+16-19;Påbegyndt vaccinationsforløb;287;4859;5906,57
+20-39;Forventet fuld effekt;64528;1218459;5295,87
+20-39;Ikke vaccineret;11629;243739;4771,09
+20-39;Påbegyndt vaccinationsforløb;1587;32746;4846,39
+40-64;Forventet fuld effekt;76938;1761731;4367,18
+40-64;Ikke vaccineret;6007;133041;4515,15
+40-64;Påbegyndt vaccinationsforløb;502;12386;4052,96
+65-79;Forventet fuld effekt;11502;860387;1336,84
+65-79;Ikke vaccineret;353;25521;1383,17
+65-79;Påbegyndt vaccinationsforløb;26;2127;1222,38
+80+;Forventet fuld effekt;2369;251908;940,42
+80+;Ikke vaccineret;77;7886;976,41
+80+;Påbegyndt vaccinationsforløb;11;869;1265,82
