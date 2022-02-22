@@ -10,11 +10,24 @@ Original file is located at
 import torch
 from torch import distributions
 
+dict_model_param = {'lower': {'R0': 2, 'phi': 0, 'sigma': 0.00001, 'alpha': 0.001},
+                    'upper': {'R0': 5, 'phi': 50, 'sigma': 0.5, 'alpha': 0.05},
+                    'value': {'R0': 3.6, 'phi': 25, 'sigma': 0.1, 'alpha': 0.01},
+                    'scale': {'R0': 0.8, 'phi': 10, 'sigma': 0.03, 'alpha': 0.01}}
+
+def initialize_prime_param(param, device, dtype):
+  value = dict_model_param['value'][param]
+  lower = dict_model_param['lower'][param]
+  upper = dict_model_param['upper'][param]
+  prime = bij_transform_inv(torch.tensor(value, device=device, dtype=dtype), lower, upper).detach().clone().requires_grad_(True)
+  return prime
+
 def initialize_observations(df_observations, start='2020-02-26', end='2022-01-31', observations=['Number_of_deaths', 'Confirmed_cases', 'Admissions_hospital']):
   time_period = (df_observations['Date'] >= start) & (df_observations['Date'] < end)
   columns = ['Date'] + observations
   df_obs_filtered = df_observations.loc[time_period][columns].reset_index(drop=True)
   return df_obs_filtered
+
 
 def initialize_epsilon(num_observations, sigma, device, dtype):
   epsilon_t = torch.zeros(num_observations, device=device, dtype=dtype)
