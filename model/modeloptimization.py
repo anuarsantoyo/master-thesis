@@ -7,6 +7,7 @@ Original file is located at
     https://colab.research.google.com/drive/1idrXmeuYsmIRA1BDR9ts8ACkMu_d8hxK
 """
 
+
 def bij_transform(prime, lower, upper):
   """Recieves a prime value in [-inf, inf] and returns value in [lower, upper]"""
   bij = 1 / (1 + torch.exp(-prime / upper))
