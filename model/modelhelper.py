@@ -81,18 +81,16 @@ def calc_mse(expected, observed):
   msr = square.mean()
   return msr
 
-def calc_prior_loss(R0, sigma, phi, alpha, device, dtpye): # To Do - use for loop - flexible input parameter
-  """Takes R0, sigma, phi and alpha as an input and calculates the prior loss.
+def calc_prior_loss(dict_param, device, dtype):
+  """Takes the dictionary of parameter as an input and calculates the prior loss.
   The prior loss is calculated by using the log-probability."""
 
   ll = torch.tensor(0.0, device=device, dtype=dtype)
 
-  ll += distributions.normal.Normal(loc=torch.tensor(dict_model_param['value']['R0'], device=device, dtype=dtype), scale=torch.tensor(dict_model_param['scale']['R0'], device=device, dtype=dtype)).log_prob(R0)[0] # neg
-
-  ll += distributions.normal.Normal(loc=torch.tensor(dict_model_param['value']['sigma'], device=device, dtype=dtype), scale=torch.tensor(dict_model_param['scale']['sigma'], device=device, dtype=dtype)).log_prob(sigma)[0]
-
-  ll += distributions.normal.Normal(loc=torch.tensor(dict_model_param['value']['phi'], device=device, dtype=dtype), scale=torch.tensor(dict_model_param['scale']['phi'], device=device, dtype=dtype)).log_prob(phi)[0]
-
-  ll += distributions.normal.Normal(loc=torch.tensor(dict_model_param['value']['alpha'], device=device, dtype=dtype), scale=torch.tensor(dict_model_param['scale']['alpha'], device=device, dtype=dtype)).log_prob(alpha)[0]
+  for key in dict_param['real_values'].keys():
+    value = torch.tensor(dict_model_param['value'][key], device=device, dtype=dtype)
+    scale = torch.tensor(dict_model_param['scale'][key], device=device, dtype=dtype)
+    parameter = dict_param['real_values'][key]
+    ll += distributions.normal.Normal(loc=value, scale=scale).log_prob(parameter)
 
   return -ll
