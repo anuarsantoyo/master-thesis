@@ -10,6 +10,15 @@ Original file is located at
 import torch
 from torch import distributions
 
+# Details Model Parameter
+dict_model_param = {'lower': {'R0': 2, 'phi': 0, 'sigma': 0.00001, 'alpha': 0.001},
+                    'upper': {'R0': 5, 'phi': 50, 'sigma': 0.5, 'alpha': 0.05},
+                    'value': {'R0': 3.6, 'phi': 25, 'sigma': 0.1, 'alpha': 0.01},
+                    'scale': {'R0': 0.8, 'phi': 10, 'sigma': 0.03, 'alpha': 0.01}}
+
+def get_dict_model_param():
+    return dict_model_param
+
 # Transformation
 def bij_transform(prime, lower, upper):
   """Recieves a prime value of type tensor in [-inf, inf] and returns value in [lower, upper]"""
@@ -21,22 +30,25 @@ def bij_transform_inv(transf, lower, upper):
   """Inverse transformation - Recieves a value of type tensor in [lower, upper] and returns value in [-inf, inf]"""
   return -torch.log(((upper - lower) / (transf - lower) - 1) ** upper)
 
+def transform_prime_variables(dict_param):
+  for key in dict_param['real_values'].keys():
+    dict_param['real_values'][key] = bij_transform(dict_param['prime_values'][key], dict_model_param['lower'][key], dict_model_param['upper'][key])
 
-# Model Parameter
-dict_model_param = {'lower': {'R0': 2, 'phi': 0, 'sigma': 0.00001, 'alpha': 0.001},
-                    'upper': {'R0': 5, 'phi': 50, 'sigma': 0.5, 'alpha': 0.05},
-                    'value': {'R0': 3.6, 'phi': 25, 'sigma': 0.1, 'alpha': 0.01},
-                    'scale': {'R0': 0.8, 'phi': 10, 'sigma': 0.03, 'alpha': 0.01}}
 
-def get_dict_model_param():
-    return dict_model_param
-
+# Initialize Model Parameter
 def initialize_prime_param(param, device, dtype):
   value = dict_model_param['value'][param]
   lower = dict_model_param['lower'][param]
   upper = dict_model_param['upper'][param]
   prime = bij_transform_inv(torch.tensor(value, device=device, dtype=dtype), lower, upper).detach().clone().requires_grad_(True)
   return prime
+
+def initialize_parameter(parameter, device, dtype):
+  dict_parameter = {'prime_values':{}, 'real_values': {}}
+  for param in parameter:
+    dict_parameter['prime_values'][param] = initialize_prime_param(param, device, dtype)
+    dict_parameter['real_values'][param] = bij_transform(dict_parameter['prime_values'][param], dict_model_param['lower'][param], dict_model_param['upper'][param])
+  return dict_parameter
 
 def initialize_epsilon(num_observations, sigma, device, dtype):
   epsilon_t = torch.zeros(num_observations, device=device, dtype=dtype)
