@@ -15,7 +15,7 @@ def epid_model(population, R, initial_newly_infected, alpha, device, dtype):
 
         df_si_dd = pd.read_csv('data/si_and_dd_covid19model.csv', sep=',', decimal='.', encoding='utf-8', dtype={'serial_interval': np.float64, 'delay_distr': np.float64})
         si = torch.tensor(df_si_dd['serial_interval'][0:n],dtype=dtype, device=device)
-        dd =  torch.tensor(df_si_dd['delay_distr'][0:n],dtype=dtype, device=device)
+        dd = torch.tensor(df_si_dd['delay_distr'][0:n],dtype=dtype, device=device)
         # Seed initial Infections
         newly_infected = torch.zeros(n, dtype=dtype, device=device)
         # number of newly infected
