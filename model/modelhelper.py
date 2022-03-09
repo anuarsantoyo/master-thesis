@@ -60,7 +60,7 @@ def initialize_epsilon(num_observations, sigma, device, dtype):
   return epsilon_t.requires_grad_(True)
 
 # Observations
-def initialize_observations(df_observations, start='2020-02-26', end='2022-01-31', observations=['Number_of_deaths', 'Confirmed_cases', 'Admissions_hospital']):
+def initialize_observations(df_observations, start='2020-02-26', end='2022-01-31', observations=['number_of_deaths', 'newly_infected', 'hospitalization']):
     # filter observations
     time_period = (df_observations['Date'] >= start) & (df_observations['Date'] < end)
     columns = ['Date'] + observations
@@ -74,7 +74,7 @@ def initialize_observations(df_observations, start='2020-02-26', end='2022-01-31
     else:
       initial_start = (dt_start - datetime.timedelta(6)).strftime(time_format)
       initial_time_period = (df_observations['Date'] >= initial_start) & (df_observations['Date'] < start)
-      initial_newly_infected = df_observations.loc[initial_time_period]['Confirmed_cases'].to_numpy()
+      initial_newly_infected = df_observations.loc[initial_time_period]['newly_infected'].to_numpy()
       
     return df_obs_filtered, initial_newly_infected
 
