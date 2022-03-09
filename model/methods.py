@@ -1,7 +1,7 @@
 from model.modelhelper import *
 from torch import distributions
 
-class RandomWalk():
+class RandomWalk:
     def __init__(self, n_observations, device, dtype):
         self.device = device
         self.dtype = dtype
@@ -58,3 +58,42 @@ class RandomWalk():
         ll += distributions.normal.Normal(loc=value, scale=scale).log_prob(self.R0)
 
         return -ll
+
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+import matplotlib.pyplot as plt
+
+class Net(nn.Module):
+    def __init__(self):
+        super(Net,self).__init__()
+        self.fc1= nn.Linear(1,6)
+        self.fc2 = nn.Linear(6,10)
+        self.fc3 = nn.Linear(10,4)
+        self.fc4 = nn.Linear(4,1)
+
+    def forward(self, x):
+        x = F.relu(self.fc1(x.float()))
+        x = F.relu(self.fc2(x))
+        x = F.relu(self.fc3(x))
+        x = self.fc4(x)
+        return 5*torch.sigmoid(x)
+
+model = Net()
+
+class TwoClusterNN:
+    def __init__(self, n_observations=None, device=None, dtype=None):
+        self.device = device
+        self.dtype = dtype
+        self.n_observations = n_observations
+        self.model = Net()
+
+    def get_parameters(self):
+        return list(set(self.model.parameters()))
+
+    def calculate_R(self,x):
+        R = self.model(x)
+        return R
+
+    def calculate_loss(self):
+        return None
