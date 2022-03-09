@@ -9,6 +9,8 @@ Original file is located at
 
 import torch
 from torch import distributions
+import datetime
+import numpy as np
 
 # Details Model Parameter
 dict_model_param = {'lower': {'R0': 2, 'phi': 0, 'sigma': 0.00001, 'alpha': 0.001},
@@ -59,10 +61,22 @@ def initialize_epsilon(num_observations, sigma, device, dtype):
 
 # Observations
 def initialize_observations(df_observations, start='2020-02-26', end='2022-01-31', observations=['Number_of_deaths', 'Confirmed_cases', 'Admissions_hospital']):
-  time_period = (df_observations['Date'] >= start) & (df_observations['Date'] < end)
-  columns = ['Date'] + observations
-  df_obs_filtered = df_observations.loc[time_period][columns].reset_index(drop=True)
-  return df_obs_filtered
+    # filter observations
+    time_period = (df_observations['Date'] >= start) & (df_observations['Date'] < end)
+    columns = ['Date'] + observations
+    df_obs_filtered = df_observations.loc[time_period][columns].reset_index(drop=True)
+    
+    # calc initial newly infected
+    time_format = "%Y-%m-%d"
+    dt_start = datetime.datetime.strptime(start, time_format)
+    if (dt_start < datetime.datetime.strptime('2020-03-03', time_format)):
+      initial_newly_infected = np.arange(1, 6)
+    else:
+      initial_start = (dt_start - datetime.timedelta(6)).strftime(time_format)
+      initial_time_period = (df_observations['Date'] >= initial_start) & (df_observations['Date'] < start)
+      initial_newly_infected = df_observations.loc[initial_time_period]['Confirmed_cases'].to_numpy()
+      
+    return df_obs_filtered, initial_newly_infected
 
 # Loss Functions
 
