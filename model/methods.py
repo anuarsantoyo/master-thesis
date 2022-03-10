@@ -65,12 +65,14 @@ import torch.nn.functional as F
 import matplotlib.pyplot as plt
 
 class Net(nn.Module):
-    def __init__(self):
+    def __init__(self, device=None, dtype=None):
+        self.device = device
+        self.dtype = dtype
         super(Net, self).__init__()
-        self.fc1 = nn.Linear(1, 6)
-        self.fc2 = nn.Linear(6, 10)
-        self.fc3 = nn.Linear(10, 4)
-        self.fc4 = nn.Linear(4, 1)
+        self.fc1 = nn.Linear(1, 6, device=self.device, dtype=self.dtype)
+        self.fc2 = nn.Linear(6, 10, device=self.device, dtype=self.dtype)
+        self.fc3 = nn.Linear(10, 4, device=self.device, dtype=self.dtype)
+        self.fc4 = nn.Linear(4, 1, device=self.device, dtype=self.dtype)
 
     def forward(self, x):
         x = F.relu(self.fc1(x.float()))
@@ -86,7 +88,7 @@ class TwoClusterNN:
         self.device = device
         self.dtype = dtype
         self.n_observations = n_observations
-        self.model = Net()
+        self.model = Net(device=self.device, dtype=self.dtype)
 
     def get_parameters(self):
         return list(set(self.model.parameters()))
