@@ -66,18 +66,18 @@ import matplotlib.pyplot as plt
 
 class Net(nn.Module):
     def __init__(self):
-        super(Net,self).__init__()
-        self.fc1= nn.Linear(1,6)
-        self.fc2 = nn.Linear(6,10)
-        self.fc3 = nn.Linear(10,4)
-        self.fc4 = nn.Linear(4,1)
+        super(Net, self).__init__()
+        self.fc1 = nn.Linear(1, 6)
+        self.fc2 = nn.Linear(6, 10)
+        self.fc3 = nn.Linear(10, 4)
+        self.fc4 = nn.Linear(4, 1)
 
     def forward(self, x):
         x = F.relu(self.fc1(x.float()))
         x = F.relu(self.fc2(x))
         x = F.relu(self.fc3(x))
         x = self.fc4(x)
-        return 5*torch.sigmoid(x)
+        return F.relu(x)#torch.sigmoid(x)
 
 model = Net()
 
@@ -91,9 +91,10 @@ class TwoClusterNN:
     def get_parameters(self):
         return list(set(self.model.parameters()))
 
-    def calculate_R(self,x):
+    def calculate_R(self, x):
+        x = torch.tensor(x, device=self.device, dtype=self.dtype).reshape(-1, 1)
         R = self.model(x)
         return R
 
     def calculate_loss(self):
-        return None
+        return torch.tensor(0,device=self.device,dtype=self.dtype)
