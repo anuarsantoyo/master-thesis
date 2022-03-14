@@ -60,7 +60,10 @@ def initialize_epsilon(num_observations, sigma, device, dtype):
   return epsilon_t.requires_grad_(True)
 
 # Observations
-def initialize_observations(df_observations, start='2020-02-26', end='2022-01-31', observations=['number_of_deaths', 'newly_infected', 'hospitalization']):
+def initialize_observations(df_observations, start='2020-02-26', end='2022-01-31', observations=['number_of_deaths', 'newly_infected', 'hospitalization'], rolling_avg=1):
+    for observation in observations:
+        df_observations[observation] = df_observations[observation].rolling(rolling_avg).mean()
+    
     # filter observations
     time_period = (df_observations['Date'] >= start) & (df_observations['Date'] < end)
     columns = ['Date'] + observations
@@ -69,7 +72,7 @@ def initialize_observations(df_observations, start='2020-02-26', end='2022-01-31
     # calc initial newly infected
     time_format = "%Y-%m-%d"
     dt_start = datetime.datetime.strptime(start, time_format)
-    if (dt_start < datetime.datetime.strptime('2020-03-03', time_format)):
+    if (dt_start < datetime.datetime.strptime('2020-03-10', time_format)):
       initial_newly_infected = np.arange(1, 6)
     else:
       initial_start = (dt_start - datetime.timedelta(6)).strftime(time_format)
