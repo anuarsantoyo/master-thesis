@@ -131,14 +131,14 @@ class TwoClusterLinear:
         self.device = device
         self.dtype = dtype
         self.n_observations = n_observations
-        self.m = torch.tensor(0, device=device, dtype=dtype, requires_grad=True)
-        self.b = torch.tensor(0, device=device, dtype=dtype, requires_grad=True)
+        self.m = torch.tensor(0., device=device, dtype=dtype, requires_grad=True)
+        self.b = torch.tensor(0., device=device, dtype=dtype, requires_grad=True)
 
     def get_parameters(self):
         return [self.b, self.m]
 
     def calculate_R(self, x):
-        x = torch.tensor(x, device=self.device, dtype=self.dtype).reshape(-1, 1)
+        x = torch.tensor(x, device=self.device, dtype=self.dtype)
         R = self.m*x + self.b
         return R
 
