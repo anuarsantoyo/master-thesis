@@ -82,7 +82,6 @@ class Net(nn.Module):
         x = self.fc4(x)
         return F.relu(x)#torch.sigmoid(x)
 
-model = Net()
 
 class TwoClusterNN:
     def __init__(self, n_observations=None, device=None, dtype=None):
@@ -102,7 +101,13 @@ class TwoClusterNN:
         return R
 
     def calculate_loss(self):
-        return torch.tensor(0, device=self.device, dtype=self.dtype)
+        reg_loss = None
+        for param in self.model.parameters():
+            if reg_loss is None:
+                reg_loss = torch.sum(param ** 2)
+            else:
+                reg_loss = reg_loss + param.norm(2) ** 2
+        return reg_loss
 
     def _get_input_data(self, start, end):
         df_cluster = pd.read_csv('data/clustering/220309_percentage_careful.csv', parse_dates=['date'])
