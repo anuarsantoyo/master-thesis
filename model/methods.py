@@ -110,7 +110,7 @@ class TwoClusterNN:
         return reg_loss
 
     def _get_input_data(self, start, end):
-        df_cluster = pd.read_csv('data/clustering/220309_percentage_careful.csv', parse_dates=['date'])
+        df_cluster = pd.read_csv('data/clustering/220309_percentage_non_careful.csv', parse_dates=['date'])
         df_cluster['percentage'] = df_cluster['percentage'].rolling(7).mean()
         df_cluster['percentage'] = (df_cluster['percentage'] - df_cluster['percentage'].min()) / (
                     df_cluster['percentage'].max() - df_cluster['percentage'].min())
