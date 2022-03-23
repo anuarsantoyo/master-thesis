@@ -10,10 +10,11 @@ import torch
 import numpy as np
 import pandas as pd
 
+df_si_dd = pd.read_csv('data/si_and_dd_covid19model.csv', sep=',', decimal='.', encoding='utf-8', dtype={'serial_interval': np.float64, 'delay_distr': np.float64})
+
 def epid_model(population, R, initial_newly_infected, alpha, device, dtype):
         n = R.size()[0]
 
-        df_si_dd = pd.read_csv('data/si_and_dd_covid19model.csv', sep=',', decimal='.', encoding='utf-8', dtype={'serial_interval': np.float64, 'delay_distr': np.float64})
         si = torch.tensor(df_si_dd['serial_interval'][0:n],dtype=dtype, device=device)
         dd = torch.tensor(df_si_dd['delay_distr'][0:n],dtype=dtype, device=device)
         # Seed initial Infections
