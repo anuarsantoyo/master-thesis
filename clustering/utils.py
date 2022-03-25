@@ -27,19 +27,20 @@ behaviour_cols = ['Q1_2_covid_is_threat',
  'Ny1_nr_times_wearing_masks_last_week']
 
 def get_cluster_input_data(data_path='data/preprocessing/220216_preprocessed_data_missing_data.csv', scaler = MinMaxScaler(), pca_data=False):
-  if pca_data == False:
-      df = pd.read_csv(data_path)
-      cluster_input_cols = behaviour_cols
-      cluster_input_raw = df[cluster_input_cols].to_numpy()
-    
-      scaler.fit(cluster_input_raw)
-      cluster_input = scaler.transform(cluster_input_raw)
-    
-  if pca_data == True:
+  if pca_data:
      data_path = 'data/preprocessing/dim_reduction/220324_pca_data.csv'
      df = pd.read_csv(data_path)
-     cluster_input_cols = df.iloc[:,:11].columns.tolist()
+     cluster_input_cols = df.iloc[:, :11].columns.tolist()
      cluster_input = df[cluster_input_cols].to_numpy()
+
+  else:
+      df = pd.read_csv(data_path)
+      cluster_input_cols = behaviour_cols
+      cluster_input = df[cluster_input_cols].to_numpy()
+
+      if scaler != None:
+          scaler.fit(cluster_input)
+          cluster_input = scaler.transform(cluster_input)
 
   info_dict = {'data_path': data_path, 'cluster_input_cols': cluster_input_cols, 'scaler_type':  scaler.__str__(), 'pca_data': pca_data}
 
