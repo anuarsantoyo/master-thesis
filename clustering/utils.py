@@ -33,13 +33,10 @@ dict_combination = {
     'group_q3_distancing': ['Q3_2_avoid_contact', 'Q3_4_avoid_risk_groups', 'Q3_5_keep_distance', 'Q3_6_avoid_crowds', 'Q3_7_minimize_activities_w_contact', 'Q5_4_yourself_kept_distance'],
     'group_q5_beh_other': ['Q5_1_others_took_distance', 'Q5_2_others_follow_advice'],
     'group_q6_opinion': ['Q6_2_advices_important', 'Q6_4_advices_create_fair_burden_dristribution', 'Q6_5_ownership_of_advice',
-                            'Q6_6_clear_information_on_advice_reason', 'Q6_9_trust_political_strategy'],
-    'group_q7_symptoms': ['Q7_1_last_week_fever', 'Q7_2_last_week_cough', 'Q7_3_last_week_sore_throat', 'Q7_4_last_week_no_smell_taste', 'Q7_5_last_week_shortness_breath'],
-    'group_q4_contacts': ['Q4_1_nr_contact_nonhouse_family', 'Q4_2_nr_contact_colleagues', 'Q4_3_nr_contact_friends', 'Q4_4_nr_contact_strangers'],
-    'group_household': ['Q11_nr_members_household', 'Q12_nr_children_household']}
+                            'Q6_6_clear_information_on_advice_reason', 'Q6_9_trust_political_strategy']} #, 'group_q7_symptoms': ['Q7_1_last_week_fever', 'Q7_2_last_week_cough', 'Q7_3_last_week_sore_throat', 'Q7_4_last_week_no_smell_taste', 'Q7_5_last_week_shortness_breath'],'group_q4_contacts': ['Q4_1_nr_contact_nonhouse_family', 'Q4_2_nr_contact_colleagues', 'Q4_3_nr_contact_friends', 'Q4_4_nr_contact_strangers'], 'group_household': ['Q11_nr_members_household', 'Q12_nr_children_household']
  
 grouped_behaviour_cols = ['group_q2_following_advice', 'group_q2_consequence_advice', 'group_q3_cleaning',
-'group_q3_distancing', 'group_q5_beh_other','group_q6_opinion', 'group_q4_contacts']
+'group_q3_distancing', 'group_q5_beh_other','group_q6_opinion'] #, 'group_q4_contacts'
 
 behaviour_cols_combined = behaviour_cols + grouped_behaviour_cols
 for values in dict_combination.values():
