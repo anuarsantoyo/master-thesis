@@ -35,8 +35,7 @@ behaviour_cols = ['Q1_1_feel_exposed',
  'Q6_6_clear_information_on_advice_reason',
  'Q6_7_advice_limits_daily_activities',
  'Q6_8_advices_enough_for_prevention',
- 'Q6_9_trust_political_strategy',
- 'Q7_last_week_symptom']
+ 'Q6_9_trust_political_strategy']
  
 behaviour_cols_original = ['Q1_2_covid_is_threat',
  'Q2_1_easy_to_follow_advice',
