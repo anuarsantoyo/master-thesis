@@ -2,7 +2,43 @@ import numpy as np
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 
-behaviour_cols = ['Q1_2_covid_is_threat',
+behaviour_cols = ['Q1_1_feel_exposed',
+ 'Q1_2_covid_is_threat',
+ 'Q2_1_easy_to_follow_advice',
+ 'Q2_2_can_follow_advice_if_wanted',
+ 'Q2_3_if_follow_advice_safe',
+ 'Q2_4_if_follow_advice_others_safe',
+ 'Q2_5_follow_advice_relationships_impared',
+ 'Q2_6_follow_advice_life_degraded',
+ 'Q3_1_aware_hand_hygiene',
+ 'Q3_2_avoid_contact',
+ 'Q3_3_ensure_frequent_cleaning',
+ 'Q3_4_avoid_risk_groups',
+ 'Q3_5_keep_distance',
+ 'Q3_6_avoid_crowds',
+ 'Q3_7_minimize_activities_w_contact',
+ 'Q3b_1_sneeze_sleeve',
+ 'Q4_1_nr_contact_nonhouse_family',
+ 'Q4_2_nr_contact_colleagues',
+ 'Q4_3_nr_contact_friends',
+ 'Q4_4_nr_contact_strangers',
+ 'Q5_1_others_took_distance',
+ 'Q5_2_others_follow_advice',
+ 'Q5_3_others_not_care_spreading',
+ 'Q5_4_yourself_kept_distance',
+ 'Q5_5_feel_urge_scold',
+ 'Q6_1_sanctions_are_too_harsh',
+ 'Q6_2_advices_important',
+ 'Q6_3_others_can_avoid_spreading',
+ 'Q6_4_advices_create_fair_burden_dristribution',
+ 'Q6_5_ownership_of_advice',
+ 'Q6_6_clear_information_on_advice_reason',
+ 'Q6_7_advice_limits_daily_activities',
+ 'Q6_8_advices_enough_for_prevention',
+ 'Q6_9_trust_political_strategy',
+ 'Q7_last_week_symptom']
+ 
+behaviour_cols_original = ['Q1_2_covid_is_threat',
  'Q2_1_easy_to_follow_advice',
  'Q2_2_can_follow_advice_if_wanted',
  'Q2_3_if_follow_advice_safe',
@@ -24,7 +60,7 @@ behaviour_cols = ['Q1_2_covid_is_threat',
  'Q6_5_ownership_of_advice',
  'Q6_6_clear_information_on_advice_reason',
  'Q6_7_advice_limits_daily_activities',
- 'Q6_9_trust_political_strategy'] # ,'Ny1_nr_times_wearing_masks_last_week'
+ 'Q6_9_trust_political_strategy']
  
 dict_combination = {
     'group_q2_following_advice': ['Q2_1_easy_to_follow_advice', 'Q2_2_can_follow_advice_if_wanted', 'Q2_3_if_follow_advice_safe', 'Q2_4_if_follow_advice_others_safe'],
@@ -57,7 +93,7 @@ def get_grouped_behaviour_cols():
 def get_behaviour_cols_combined():
     return behaviour_cols_combined
 
-def get_preprocessed_data(data_path='data/preprocessing/220407_preprocessed_data_without_imputation.csv', impute=True, impute_cols=behaviour_cols):
+def get_preprocessed_data(data_path='data/preprocessing/220427_preprocessed_data_without_imputation.csv', impute=True, impute_cols=behaviour_cols):
     df = pd.read_csv(data_path)
     if impute:
         thresh_drop = int(len(impute_cols) * 0.9)
@@ -66,7 +102,7 @@ def get_preprocessed_data(data_path='data/preprocessing/220407_preprocessed_data
             df[column].fillna(value=df[column].mean(), inplace=True)
     return df
 
-def get_cluster_input_data(data_path='data/preprocessing/220407_preprocessed_data_without_imputation.csv', scaler = MinMaxScaler(), pca_data=False, grouped_data=False, combined_data=False, fa_data=False):
+def get_cluster_input_data(data_path='data/preprocessing/220427_preprocessed_data_without_imputation.csv', scaler = MinMaxScaler(), pca_data=False, grouped_data=False, combined_data=False, fa_data=False):
   if pca_data:
       data_path = 'data/preprocessing/dim_reduction/220407_pca_data.csv'
       df = pd.read_csv(data_path)
