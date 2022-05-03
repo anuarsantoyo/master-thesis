@@ -113,11 +113,11 @@ def get_cluster_input_data(data_path='data/preprocessing/220427_preprocessed_dat
       scaler = None
 
   elif fa_data:
-      data_path = 'data/preprocessing/dim_reduction/220415_fa_data.csv'
+      data_path = 'data/preprocessing/dim_reduction/220503_fa_data.csv'
       df = pd.read_csv(data_path)
       cluster_input_cols = factor_cols
       cluster_input = df[cluster_input_cols].to_numpy()
-      scaler = None
+      #scaler = None
 
       
   elif combined_data:
@@ -136,7 +136,7 @@ def get_cluster_input_data(data_path='data/preprocessing/220427_preprocessed_dat
       scaler.fit(cluster_input)
       cluster_input = scaler.transform(cluster_input)
 
-  info_dict = {'data_path': data_path, 'cluster_input_cols': cluster_input_cols, 'scaler_type':  scaler.__str__(), 'pca_data': pca_data, 'grouped_data': grouped_data, 'combined_data': combined_data}
+  info_dict = {'data_path': data_path, 'cluster_input_cols': cluster_input_cols, 'scaler_type':  scaler.__str__(), 'pca_data': pca_data, 'fa_data': fa_data, 'combined_data': combined_data}
 
   return df, cluster_input, info_dict
 
