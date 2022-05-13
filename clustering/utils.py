@@ -111,7 +111,7 @@ def get_cluster_input_data(data_path='data/preprocessing/220427_preprocessed_dat
   if pca_data:
       data_path = 'data/preprocessing/dim_reduction/220513_pca_data.csv'
       df = pd.read_csv(data_path)
-      cluster_input_cols = df.iloc[:, :10].columns.tolist()
+      cluster_input_cols = df.iloc[:, :9].columns.tolist()
       cluster_input = df[cluster_input_cols].to_numpy()
       scaler = None
 
