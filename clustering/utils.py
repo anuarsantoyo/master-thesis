@@ -94,8 +94,11 @@ def get_factor_cols():
 def get_behaviour_cols_combined():
     return behaviour_cols_combined
 
-def get_preprocessed_data(data_path='data/preprocessing/220427_preprocessed_data_without_imputation.csv', impute=True, impute_cols=behaviour_cols):
+def get_preprocessed_data(data_path='data/preprocessing/220427_preprocessed_data_without_imputation.csv', impute=True, impute_cols=behaviour_cols, start='2020-05-28', end='2021-12-02'):
     df = pd.read_csv(data_path)
+    df.date = pd.to_datetime(df.date, format='%Y-%m-%d')
+    df = df[(df.date > start) & (df.date < end)]
+    df.reset_index(inplace=True, drop=True)
     if impute:
         thresh_drop = int(len(impute_cols) * 0.9)
         df.dropna(thresh=thresh_drop, subset=impute_cols, inplace=True)
@@ -104,7 +107,7 @@ def get_preprocessed_data(data_path='data/preprocessing/220427_preprocessed_data
             df[column].fillna(value=df[column].mean(), inplace=True)
     return df
 
-def get_cluster_input_data(data_path='data/preprocessing/220427_preprocessed_data_without_imputation.csv', scaler = MinMaxScaler(), pca_data=False, combined_data=False, fa_data=False):
+def get_cluster_input_data(data_path='data/preprocessing/220427_preprocessed_data_without_imputation.csv', scaler = MinMaxScaler(), pca_data=False, fa_data=False):
   if pca_data:
       data_path = 'data/preprocessing/dim_reduction/220407_pca_data.csv'
       df = pd.read_csv(data_path)
@@ -119,13 +122,6 @@ def get_cluster_input_data(data_path='data/preprocessing/220427_preprocessed_dat
       cluster_input = df[cluster_input_cols].to_numpy()
       #scaler = None
 
-      
-  elif combined_data:
-      data_path = 'data/preprocessing/dim_reduction/220407_grouped_data.csv'
-      df = pd.read_csv(data_path)
-      cluster_input_cols = behaviour_cols_combined
-      cluster_input = df[cluster_input_cols].to_numpy()
-
 
   else:
       cluster_input_cols = behaviour_cols
@@ -136,7 +132,7 @@ def get_cluster_input_data(data_path='data/preprocessing/220427_preprocessed_dat
       scaler.fit(cluster_input)
       cluster_input = scaler.transform(cluster_input)
 
-  info_dict = {'data_path': data_path, 'cluster_input_cols': cluster_input_cols, 'scaler_type':  scaler.__str__(), 'pca_data': pca_data, 'fa_data': fa_data, 'combined_data': combined_data}
+  info_dict = {'data_path': data_path, 'cluster_input_cols': cluster_input_cols, 'scaler_type':  scaler.__str__(), 'pca_data': pca_data, 'fa_data': fa_data}
 
   return df, cluster_input, info_dict
 
