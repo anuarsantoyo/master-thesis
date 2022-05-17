@@ -1,6 +1,8 @@
 import numpy as np
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
+from sklearn.mixture import GaussianMixture
+from sklearn.cluster import KMeans
 
 behaviour_cols = ['Q1_1_feel_exposed',
  'Q1_2_covid_is_threat',
@@ -107,8 +109,8 @@ def get_preprocessed_data(data_path='data/preprocessing/220427_preprocessed_data
     return df
 
 
-def get_cluster_input_data_new(scaler = MinMaxScaler(), pca_data=False, fa_data=False, start_train='2020-05-28', end_train='2021-12-02'):
-  if pca_data:
+def get_cluster_input_data_new(scaler = MinMaxScaler(), data='fa_data', start_train='2020-05-28', end_train='2021-12-02'):
+  if data == 'pca_data':
       data_path = 'data/preprocessing/dim_reduction/220513_pca_data.csv'
       cluster_input_cols = []
       for i in np.arange(9):
@@ -116,7 +118,7 @@ def get_cluster_input_data_new(scaler = MinMaxScaler(), pca_data=False, fa_data=
         cluster_input_cols.append(col_name)
       scaler = None
 
-  elif fa_data:
+  elif data == 'fa_data':
       data_path = 'data/preprocessing/dim_reduction/220513_fa_data.csv'
       cluster_input_cols = factor_cols
 
@@ -132,10 +134,61 @@ def get_cluster_input_data_new(scaler = MinMaxScaler(), pca_data=False, fa_data=
       scaler.fit(cluster_input_train)
       cluster_input_train_scaled = scaler.transform(cluster_input_train)
 
-  info_dict = {'data_path': data_path, 'cluster_input_cols': cluster_input_cols, 'scaler_type':  scaler.__str__(), 'pca_data': pca_data, 'fa_data': fa_data, 'start_train': start_train, 'end_train': end_train}
+  info_dict = {'data_path': data_path, 'cluster_input_cols': cluster_input_cols, 'scaler_type':  scaler.__str__(), 'data': data, 'start_train': start_train, 'end_train': end_train}
 
   return df, cluster_input_train, cluster_input_all, info_dict
 
+def get_gmm_cluster_data(n_cluster=2, cov_type='full', cluster_input_data='fa_data', start_train='2020-07-31', end_train='2020-12-01'):
+  df, answers_train, answers, info_dict = get_cluster_input_data_new(data=cluster_input_data, start_train=start_train, end_train=end_train)
+  cluster_input_cols = info_dict['cluster_input_cols']
+  gmm_name = 'GMM_' + str(n_cluster) + '_cluster_cov_type_' + cov_type
+  csv_path = 'data/clustering/' + gmm_name + '.csv'
+  try:
+    df = pd.read_csv(csv_path)
+    df.date = pd.to_datetime(df.date, format='%Y-%m-%d')
+
+  except:
+    gmm = GaussianMixture(n_components=n_cluster, covariance_type=cov_type, random_state=123, n_init=6)
+    gmm.fit(answers_train)
+
+    df['group'] = gmm.predict(answers)
+    df['group_prob'] = pd.DataFrame(gmm.predict_proba(answers)).max(axis=1)
+    df.to_csv(csv_path, index=False)
+  labels = df['group'].to_numpy()
+  return df, cluster_input_cols, answers_train, answers, labels
+
+def get_cluster_data(n_cluster=2, method='gmm', cov_type='full', cluster_input_data='fa_data', start_train='2020-07-31', end_train='2020-12-01'):
+
+  df, answers_train, answers, info_dict = get_cluster_input_data_new(data=cluster_input_data, start_train=start_train, end_train=end_train)
+  cluster_input_cols = info_dict['cluster_input_cols']
+  model_specific_score = np.nan
+  if method == 'kmeans':
+    filename = 'kmeans_' + str(n_cluster)
+  elif method == 'gmm':
+    filename = 'GMM_' + str(n_cluster) + '_cluster_cov_type_' + cov_type
+
+  csv_path = 'data/clustering/' + filename + '.csv'
+  try:
+    df = pd.read_csv(csv_path)
+    df.date = pd.to_datetime(df.date, format='%Y-%m-%d')
+
+  except:
+    if method == 'kmeans':
+      model = KMeans(n_clusters=n_cluster)
+      model.fit(answers_train)
+      model_specific_score = model.inertia_
+
+    elif method == 'gmm':
+      model = GaussianMixture(n_components=n_cluster, covariance_type=cov_type, random_state=123, n_init=6)
+      model.fit(answers_train)
+      model_specific_score = model.bic(answers_train)
+      df['group_prob'] = pd.DataFrame(model.predict_proba(answers)).max(axis=1)
+    
+    df['group'] = model.predict(answers)  
+    df.to_csv(csv_path, index=False)
+
+  labels = df['group'].to_numpy()
+  return df, cluster_input_cols, answers_train, answers, labels, model_specific_score
 
 
 
