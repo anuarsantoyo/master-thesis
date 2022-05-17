@@ -132,7 +132,8 @@ def get_cluster_input_data_new(scaler = MinMaxScaler(), data='fa_data', start_tr
     
   if scaler != None:
       scaler.fit(cluster_input_train)
-      cluster_input_train_scaled = scaler.transform(cluster_input_train)
+      cluster_input_train = scaler.transform(cluster_input_train)
+      cluster_input_all = scaler.transform(cluster_input_all)
 
   info_dict = {'data_path': data_path, 'cluster_input_cols': cluster_input_cols, 'scaler_type':  scaler.__str__(), 'data': data, 'start_train': start_train, 'end_train': end_train}
 
