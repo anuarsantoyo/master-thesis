@@ -166,7 +166,7 @@ def get_cluster_data(n_cluster=2, method='gmm', cov_type='full', cluster_input_d
   if method == 'kmeans':
     filename = 'kmeans_' + str(n_cluster)
   elif method == 'gmm':
-    filename = 'GMM_' + str(n_cluster) + '_cluster_cov_type_' + cov_type
+    filename = 'gmm_'  + cov_type + '_' + str(n_cluster)
 
   csv_path = 'data/clustering/' + filename + '.csv'
   try:
