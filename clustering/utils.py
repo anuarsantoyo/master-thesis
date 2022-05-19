@@ -158,7 +158,7 @@ def get_gmm_cluster_data(n_cluster=2, cov_type='full', cluster_input_data='fa_da
   labels = df['group'].to_numpy()
   return df, cluster_input_cols, answers_train, answers, labels
 
-def get_cluster_data(n_cluster=2, method='gmm', cov_type='full', cluster_input_data='fa_data', start_train='2020-07-31', end_train='2020-12-01'):
+def get_cluster_data(n_cluster=2, method='gmm', cov_type='full', cluster_input_data='fa_data', start_train='2020-07-31', end_train='2020-12-01', random_seed=1, n_init=10):
 
   df, answers_train, answers, info_dict = get_cluster_input_data_new(data=cluster_input_data, start_train=start_train, end_train=end_train)
   cluster_input_cols = info_dict['cluster_input_cols']
@@ -175,12 +175,12 @@ def get_cluster_data(n_cluster=2, method='gmm', cov_type='full', cluster_input_d
 
   except:
     if method == 'kmeans':
-      model = KMeans(n_clusters=n_cluster)
+      model = KMeans(n_clusters=n_cluster, n_init=n_init, random_state=random_seed)
       model.fit(answers_train)
       model_specific_score = model.inertia_
 
     elif method == 'gmm':
-      model = GaussianMixture(n_components=n_cluster, covariance_type=cov_type, random_state=123, n_init=6)
+      model = GaussianMixture(n_components=n_cluster, covariance_type=cov_type, n_init=n_init, random_state=random_seed)
       model.fit(answers_train)
       model_specific_score = model.bic(answers_train)
       df['group_prob'] = pd.DataFrame(model.predict_proba(answers)).max(axis=1)
