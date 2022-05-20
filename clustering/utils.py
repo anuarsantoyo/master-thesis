@@ -273,7 +273,7 @@ def get_cluster_data_experiments(n_cluster=2, method='gmm', cov_type='full', clu
   elif method == 'gmm':
     filename = 'gmm_'  + cov_type + '_' + str(n_cluster)
 
-  path = str(pathlib.Path.cwd()) + '/data/clustering/random_seed_' + str(random_seed)
+  path = str(pathlib.Path.cwd()) + '/data/clustering/experiments/random_seed_' + str(random_seed)
   pathlib.Path(path).mkdir(parents=True, exist_ok=True)
   csv_path = path +'/' + filename + '.csv'
 
