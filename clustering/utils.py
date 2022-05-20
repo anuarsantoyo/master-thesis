@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import pathlib
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.mixture import GaussianMixture
 from sklearn.cluster import KMeans
@@ -233,6 +234,65 @@ def get_cluster_input_data(data_path='data/preprocessing/220427_preprocessed_dat
   info_dict = {'data_path': data_path, 'cluster_input_cols': cluster_input_cols, 'scaler_type':  scaler.__str__(), 'pca_data': pca_data, 'fa_data': fa_data}
 
   return df, cluster_input, info_dict
+  
+  
+  
+def get_cluster_input_data_experiments(scaler = MinMaxScaler(), data='fa_data', start_train='2020-05-28', end_train='2021-12-02'):
+  if data == 'pca_data':
+      data_path = 'data/preprocessing/dim_reduction/220513_pca_data.csv'
+      cluster_input_cols = []
+      for i in np.arange(9):
+        col_name = 'PC_' + str(i)
+        cluster_input_cols.append(col_name)
+      scaler = None
+
+  elif data == 'fa_data':
+      data_path = 'data/preprocessing/dim_reduction/220513_fa_data.csv'
+      cluster_input_cols = factor_cols
 
 
+  df = pd.read_csv(data_path)
+  df.date = pd.to_datetime(df.date, format='%Y-%m-%d')
+  df_cluster_input = df[(df.date > start_train) & (df.date < end_train)].copy()
+  df_cluster_input.reset_index(inplace=True, drop=True)
+  cluster_input_train = df_cluster_input[cluster_input_cols].to_numpy()
+  cluster_input_all = df[cluster_input_cols].to_numpy()
+    
+  if scaler != None:
+      scaler.fit(cluster_input_train)
+      cluster_input_train = scaler.transform(cluster_input_train)
+      cluster_input_all = scaler.transform(cluster_input_all)
 
+  return cluster_input_train, cluster_input_all
+
+
+def get_cluster_data_experiments(n_cluster=2, method='gmm', cov_type='full', cluster_input_data='fa_data', start_train='2020-07-31', end_train='2020-12-01', random_seed=1, n_init=10):
+
+  if method == 'kmeans':
+    filename = 'kmeans_' + str(n_cluster)
+  elif method == 'gmm':
+    filename = 'gmm_'  + cov_type + '_' + str(n_cluster)
+
+  path = str(pathlib.Path.cwd()) + '/data/clustering/random_seed_' + str(random_seed)
+  pathlib.Path(path).mkdir(parents=True, exist_ok=True)
+  csv_path = path +'/' + filename + '.csv'
+
+  cluster_input_train, cluster_input_all = get_cluster_input_data_experiments(data=cluster_input_data, start_train=start_train, end_train=end_train) # anpassen
+  df = pd.DataFrame()
+
+  if method == 'kmeans':
+        model = KMeans(n_clusters=n_cluster, n_init=n_init, random_state=random_seed)
+        model.fit(cluster_input_train)
+        model_specific_score = model.inertia_
+
+  elif method == 'gmm':
+    model = GaussianMixture(n_components=n_cluster, covariance_type=cov_type, n_init=n_init, random_state=random_seed)
+    model.fit(cluster_input_train)
+    model_specific_score = model.bic(cluster_input_train)
+    df['group_prob'] = pd.DataFrame(model.predict_proba(cluster_input_all)).max(axis=1)
+  
+  
+  labels = model.predict(cluster_input_all)
+  df['group'] = labels
+  df.to_csv(csv_path, index=True)
+  return cluster_input_all, labels, model_specific_score
