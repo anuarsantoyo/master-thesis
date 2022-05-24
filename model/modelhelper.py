@@ -35,7 +35,8 @@ def bij_transform_inv(transf, lower, upper):
 def transform_prime_variables(dict_param):
   for key in dict_param['real_values'].keys():
     dict_param['real_values'][key] = bij_transform(dict_param['prime_values'][key], dict_model_param['lower'][key], dict_model_param['upper'][key])
-
+  return dict_param
+  
 
 # Initialize Model Parameter
 def initialize_prime_param(param, device, dtype):
