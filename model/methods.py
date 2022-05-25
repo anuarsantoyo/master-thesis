@@ -20,6 +20,12 @@ class RandomWalk:
 
     def get_parameters(self):
         return [self.epsilon_t, self.sigma_prime, self.R0_prime]
+    
+    def get_sigma(self):
+        return bij_transform(self.sigma_prime, self.dict_model_param['lower']['sigma'], self.dict_model_param['upper']['sigma'])
+    
+    def get_R0(self):
+        return bij_transform(self.R0_prime, self.dict_model_param['lower']['R0'], self.dict_model_param['upper']['R0'])
 
     def calculate_R(self):
         self.R0 = bij_transform(self.R0_prime, self.dict_model_param['lower']['R0'], self.dict_model_param['upper']['R0'])
@@ -39,7 +45,7 @@ class RandomWalk:
     def calculate_loss(self):
         return self.calc_random_walk_loss() + self.calc_prior_loss()
 
-    def calc_random_walk_loss(self):
+    def calc_random_walk_loss(self): # add error epsilon_t0 N(0, sigma)
       loc = self.epsilon_t[:self.n_observations-1]
       scale = self.sigma * torch.ones(self.n_observations - 1, device=self.device, dtype=self.dtype)
       mvn = distributions.multivariate_normal.MultivariateNormal(loc, scale_tril=torch.diag(scale))

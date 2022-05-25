@@ -13,35 +13,28 @@ import pandas as pd
 df_si = pd.read_csv('data/si_and_dd_covid19model.csv', sep=',', decimal='.', encoding='utf-8', dtype={'serial_interval': np.float64, 'delay_distr': np.float64})
 df_dd = pd.read_csv('data/infection_to_hospitalization_delay.csv', sep=';', decimal='.', encoding='utf-8', dtype={'delay_distribution': np.float64})
 
-def epid_model(population, R, initial_newly_infected, alpha, device, dtype):
+def epid_model(R, initial_newly_infected, alpha, device, dtype):
         n = R.size()[0]
 
         si = torch.tensor(df_si['serial_interval'][0:n],dtype=dtype, device=device)
         dd = torch.tensor(df_dd['delay_distribution'][0:n],dtype=dtype, device=device)
 
         newly_infected = torch.zeros(n, dtype=dtype, device=device)
-        cumulative_infected = torch.zeros(n, dtype=dtype, device=device)
         
-        St = torch.ones(n,dtype=dtype, device=device)  # fraction of susceptible population
         effectively_infectious = torch.zeros(n, dtype=dtype, device=device)
         cero = torch.tensor(0.,dtype=dtype, device=device)
 
         num_init = initial_newly_infected.size
         newly_infected[0:num_init] = torch.tensor(initial_newly_infected, dtype=dtype, device=device)
-        cumulative_infected[1:num_init] = torch.cumsum(newly_infected[0:num_init - 1].clone(), dim=0)
 
 
         for t in range(num_init, n):
-                # Update cumulative newly_infected
-                cumulative_infected[t] = cumulative_infected[t - 1] + newly_infected[t - 1]
-                # Adjusts for portion of pop that are susceptible
-                St[t] = torch.maximum(population - cumulative_infected[t], cero) / population
                 # effective number of infectous individuals
                 ni_temp = newly_infected[:t].view(1, 1, -1).clone()
                 si_temp = torch.flip(si, (0,))[-t:].view(1, 1, -1)
                 effectively_infectious[t] = torch.nn.functional.conv1d(ni_temp, si_temp)
 
-                newly_infected[t] = St[t].clone() * R[t] * effectively_infectious[t].clone()
+                newly_infected[t] = R[t] * effectively_infectious[t].clone() #* S[t]
 
         # calc hospitalizations
         # Initialize expected_daily_hospit
@@ -54,4 +47,4 @@ def epid_model(population, R, initial_newly_infected, alpha, device, dtype):
                 dd_temp = torch.flip(dd, (0,))[-t - 1:-1].view(1, 1, -1)
                 expected_daily_hospit[t] = alpha * torch.nn.functional.conv1d(ni_temp, dd_temp)
 
-        return {'St': St, 'newly_infected': newly_infected, 'cumulative': cumulative_infected, 'hospitalization': expected_daily_hospit}
+        return {'newly_infected': newly_infected, 'hospitalization': expected_daily_hospit}
