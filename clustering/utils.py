@@ -39,8 +39,18 @@ behaviour_cols = ['Q1_1_feel_exposed',
  'Q6_7_advice_limits_daily_activities',
  'Q6_8_advices_enough_for_prevention',
  'Q6_9_trust_political_strategy']
- 
- 
+
+
+dict_combination_without_contacts = {
+    'F0_cautious_behaviour': ['Q3_1_aware_hand_hygiene', 'Q3_2_avoid_contact', 'Q3_3_ensure_frequent_cleaning',
+    'Q3_4_avoid_risk_groups', 'Q3_5_keep_distance', 'Q3_6_avoid_crowds', 'Q3_7_minimize_activities_w_contact', 'Q5_4_yourself_kept_distance'],
+    'F1_perception_advice': ['Q6_2_advices_important', 'Q6_4_advices_create_fair_burden_dristribution', 'Q6_5_ownership_of_advice',
+                            'Q6_6_clear_information_on_advice_reason', 'Q6_8_advices_enough_for_prevention', 'Q6_9_trust_political_strategy'],
+    'F2_applicability_usefullness_advice': ['Q2_1_easy_to_follow_advice', 'Q2_2_can_follow_advice_if_wanted', 'Q2_3_if_follow_advice_safe', 'Q2_4_if_follow_advice_others_safe'],
+    'F3_behaviour_others': ['Q5_1_others_took_distance', 'Q5_2_others_follow_advice'],
+    'F4_consequence_advice': ['Q2_5_follow_advice_relationships_impared', 'Q2_6_follow_advice_life_degraded', 'Q6_7_advice_limits_daily_activities'],
+    'F6_perceived_threat': ['Q1_1_feel_exposed', 'Q1_2_covid_is_threat']}
+    
 dict_combination = {
     'F0_cautious_behaviour': ['Q3_1_aware_hand_hygiene', 'Q3_2_avoid_contact', 'Q3_3_ensure_frequent_cleaning',
     'Q3_4_avoid_risk_groups', 'Q3_5_keep_distance', 'Q3_6_avoid_crowds', 'Q3_7_minimize_activities_w_contact', 'Q5_4_yourself_kept_distance'],
@@ -49,10 +59,8 @@ dict_combination = {
     'F2_applicability_usefullness_advice': ['Q2_1_easy_to_follow_advice', 'Q2_2_can_follow_advice_if_wanted', 'Q2_3_if_follow_advice_safe', 'Q2_4_if_follow_advice_others_safe'],
     'F3_behaviour_others': ['Q5_1_others_took_distance', 'Q5_2_others_follow_advice'],
     'F4_consequence_advice': ['Q2_5_follow_advice_relationships_impared', 'Q2_6_follow_advice_life_degraded', 'Q6_7_advice_limits_daily_activities'],
-    'F5_no_contacts': ['Q4_1_nr_contact_nonhouse_family', 'Q4_2_nr_contact_colleagues', 'Q4_3_nr_contact_friends', 'Q4_4_nr_contact_strangers'],
-    'F6_perceived_threat': ['Q1_1_feel_exposed', 'Q1_2_covid_is_threat']}
+    'F5_no_contacts': ['Q4_1_nr_contact_nonhouse_family', 'Q4_2_nr_contact_colleagues', 'Q4_3_nr_contact_friends', 'Q4_4_nr_contact_strangers']}
  
-factor_cols = ['F0_cautious_behaviour', 'F1_perception_advice', 'F2_applicability_usefullness_advice', 'F3_behaviour_others', 'F4_consequence_advice', 'F5_no_contacts', 'F6_perceived_threat']
 
 def get_behaviour_cols():
     return behaviour_cols
@@ -60,6 +68,8 @@ def get_behaviour_cols():
 def get_dict_combination():
     return dict_combination
     
+factor_cols = list(dict_combination.keys())
+
 def get_factor_cols():
     return factor_cols
 
@@ -178,7 +188,7 @@ def get_cluster_data_experiments(n_cluster=2, method='gmm', cov_type='full', clu
   if method == 'gmm':
     filename = method + '_' + cov_type + '_' + str(n_cluster)
 
-  path = str(pathlib.Path.cwd()) + '/data/clustering/experiments/random_seed_' + str(random_seed)
+  path = str(pathlib.Path.cwd()) + '/data/clustering/experiments/5_factor/random_seed_' + str(random_seed)
   pathlib.Path(path).mkdir(parents=True, exist_ok=True)
   csv_path = path +'/' + filename + '.csv'
 
