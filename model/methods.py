@@ -45,11 +45,11 @@ class RandomWalk:
     def calculate_loss(self):
         return self.calc_random_walk_loss() + self.calc_prior_loss()
 
-    def calc_random_walk_loss(self): # add error epsilon_t0 N(0, sigma)
-      loc = self.epsilon_t[:self.n_observations-1]
-      scale = self.sigma * torch.ones(self.n_observations - 1, device=self.device, dtype=self.dtype)
+    def calc_random_walk_loss(self):
+      loc = torch.cat((torch.tensor(0).view(1), self.epsilon_t[:self.n_observations-1]), 0)
+      scale = self.sigma * torch.ones(self.n_observations, device=self.device, dtype=self.dtype)
       mvn = distributions.multivariate_normal.MultivariateNormal(loc, scale_tril=torch.diag(scale))
-      ll = mvn.log_prob(self.epsilon_t[1:self.n_observations])
+      ll = mvn.log_prob(self.epsilon_t)
       return -ll
 
     def calc_prior_loss(self):
