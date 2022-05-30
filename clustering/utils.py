@@ -210,11 +210,16 @@ def get_cluster_data_experiments(n_cluster=2, method='gmm', cov_type='full', clu
       df['group_prob'] = pd.DataFrame(model.predict_proba(cluster_input_all)).max(axis=1)
 
   elif method == 'nnmf':
-      model = NMF(n_components=n_cluster, init='random', random_state=random_seed, max_iter=10000)
-      model.fit(cluster_input_train)
-      labels = np.argmax(model.transform(cluster_input_all), axis=1)
-      model_specific_score = model.reconstruction_err_
-  
+      best_score = 0
+      for i in range(10):
+          model = NMF(n_components=n_cluster, init='random', random_state=random_seed, max_iter=10000)
+          model.fit(cluster_input_train)
+          score = model.reconstruction_err_
+          if score > best_score:
+              best_model = model
+              model_specific_score = score
+
+      labels = np.argmax(best_model.transform(cluster_input_all), axis=1)
 
   df['group'] = labels
   df.to_csv(csv_path, index=True)

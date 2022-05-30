@@ -106,7 +106,7 @@ def calc_poisson_loss(expected, observed):
         mu = val
         k = observed[i]
         sum += poisson.pmf(k, mu)
-    return sum/(i+1) #TODO: ask Andreas what should we do with values at the end and parameters of negative bin dist
+    return -sum/(i+1)
 
 def calc_negative_binomnial_loss(expected, observed, phi):
     sum = 0
@@ -114,7 +114,7 @@ def calc_negative_binomnial_loss(expected, observed, phi):
         mu = val
         k = observed[i]
         sum += nbinom.pmf(k, mu, phi)
-    return sum/(i + 1)  # TODO: ask Andreas what should we do with values at the end and parameters of negative bin dist
+    return -sum/(i + 1)
 
 
 def calc_prior_loss(dict_param, device, dtype):
