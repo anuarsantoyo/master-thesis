@@ -107,12 +107,9 @@ class TwoClusterNN:
         return R
 
     def calculate_loss(self):
-        reg_loss = None
+        reg_loss = 0
         for param in self.model.parameters():
-            if reg_loss is None:
-                reg_loss = torch.sum(param ** 2)
-            else:
-                reg_loss = reg_loss + param.norm(2) ** 2
+            reg_loss += param.norm(2) ** 2
         return reg_loss
 
     def _get_input_data(self, start, end):
