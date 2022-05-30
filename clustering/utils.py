@@ -211,9 +211,8 @@ def get_cluster_data_experiments(n_cluster=2, method='gmm', cov_type='full', clu
 
   elif method == 'nnmf':
       model = NMF(n_components=n_cluster, init='random', random_state=random_seed, max_iter=1000)
-      W = model.fit_transform(cluster_input_train.T)
-      H = model.components_
-      labels = np.argmax(H, axis=0)
+      model.fit(cluster_input_train.T)
+      labels = np.argmax(model.transform(cluster_input_all), axis=1)
       model_specific_score = model.reconstruction_err_
   
 
