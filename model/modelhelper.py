@@ -11,6 +11,7 @@ import torch
 from torch import distributions
 import datetime
 import numpy as np
+from scipy.stats import poisson, nbinom
 
 # Details Model Parameter
 dict_model_param = {'lower': {'R0': 0.001, 'phi': 0, 'sigma': 0.001, 'alpha': 0.001},
@@ -98,6 +99,23 @@ def calc_mse(expected, observed):
   square = diff.square()
   msr = square.mean()
   return msr
+
+def calc_poisson_loss(expected, observed):
+    sum = 0
+    for i, val in enumerate(expected):
+        mu = val
+        k = observed[i]
+        sum += poisson.pmf(k, mu)
+    return sum/(i+1) #TODO: ask Andreas what should we do with values at the end and parameters of negative bin dist
+
+def calc_negative_binomnial_loss(expected, observed, phi):
+    sum = 0
+    for i, val in enumerate(expected):
+        mu = val
+        k = observed[i]
+        sum += nbinom.pmf(k, mu, phi)
+    return sum/(i + 1)  # TODO: ask Andreas what should we do with values at the end and parameters of negative bin dist
+
 
 def calc_prior_loss(dict_param, device, dtype):
   """Takes the dictionary of parameter as an input and calculates the prior loss.
