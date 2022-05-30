@@ -4,6 +4,7 @@ import pathlib
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.mixture import GaussianMixture
 from sklearn.cluster import KMeans
+from sklearn.decomposition import NMF
 
 behaviour_cols = ['Q1_1_feel_exposed',
  'Q1_2_covid_is_threat',
@@ -196,21 +197,26 @@ def get_cluster_data_experiments(n_cluster=2, method='gmm', cov_type='full', clu
   df = pd.DataFrame()
 
   if method == 'kmeans':
-        model = KMeans(n_clusters=n_cluster, n_init=n_init, random_state=random_seed)
-        model.fit(cluster_input_train)
-        model_specific_score = model.inertia_
+      model = KMeans(n_clusters=n_cluster, n_init=n_init, random_state=random_seed)
+      model.fit(cluster_input_train)
+      model_specific_score = model.inertia_
+      labels = model.predict(cluster_input_all)
 
   elif method == 'gmm':
-    model = GaussianMixture(n_components=n_cluster, covariance_type=cov_type, n_init=n_init, random_state=random_seed)
-    model.fit(cluster_input_train)
-    model_specific_score = model.bic(cluster_input_train)
-    df['group_prob'] = pd.DataFrame(model.predict_proba(cluster_input_all)).max(axis=1)
+      model = GaussianMixture(n_components=n_cluster, covariance_type=cov_type, n_init=n_init, random_state=random_seed)
+      model.fit(cluster_input_train)
+      model_specific_score = model.bic(cluster_input_train)
+      labels = model.predict(cluster_input_all)
+      df['group_prob'] = pd.DataFrame(model.predict_proba(cluster_input_all)).max(axis=1)
 
-  elif method == 'nnmf': # Add NNMF
-      model_specific_score = np.nan
+  elif method == 'nnmf':
+      model = NMF(n_components=n_cluster, init='random', random_state=random_seed, max_iter=1000)
+      W = model.fit_transform(cluster_input_train.T)
+      H = model.components_
+      labels = np.argmax(H, axis=0)
+      model_specific_score = model.reconstruction_err_
   
-  
-  labels = model.predict(cluster_input_all)
+
   df['group'] = labels
   df.to_csv(csv_path, index=True)
   return cluster_input_all, labels, model_specific_score
