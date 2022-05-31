@@ -119,6 +119,7 @@ def get_preprocessed_data(data_path='data/preprocessing/220427_preprocessed_data
         df.dropna(subset=['date'], inplace=True)
         for column in impute_cols:
             df[column].fillna(value=df[column].mean(), inplace=True)
+    df.reset_index(inplace=True, drop=True)
     return df
 
 
@@ -132,7 +133,7 @@ def get_cluster_input_data_new(scaler = MinMaxScaler(), data='fa_data', start_tr
       scaler = None
 
   elif data == 'fa_data':
-      data_path = 'data/preprocessing/dim_reduction/220513_fa_data.csv'
+      data_path = 'data/preprocessing/dim_reduction/220531_fa_data.csv'
       cluster_input_cols = factor_cols
 
 
@@ -197,7 +198,7 @@ def get_cluster_input_data_experiments(scaler = MinMaxScaler(), data='fa_data', 
       scaler = None
 
   elif data == 'fa_data':
-      data_path = 'data/preprocessing/dim_reduction/220513_fa_data.csv'
+      data_path = 'data/preprocessing/dim_reduction/220531_fa_data.csv'
       cluster_input_cols = factor_cols
 
 
