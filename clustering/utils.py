@@ -245,7 +245,7 @@ def get_cluster_data_experiments(n_cluster=2, method='gmm', cov_type='full', clu
 
   elif method == 'nnmf':
       best_score = 0
-      for i in range(10):
+      for i in range(n_init):
           model = NMF(n_components=n_cluster, init='random', random_state=random_seed, max_iter=10000)
           model.fit(cluster_input_train)
           score = model.reconstruction_err_
