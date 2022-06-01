@@ -245,15 +245,16 @@ def get_cluster_data_experiments(n_cluster=2, method='gmm', cov_type='full', clu
 
   elif method == 'nnmf':
       best_score = 0
-      for i in range(n_init):
-          model = NMF(n_components=n_cluster, init='random', random_state=random_seed, max_iter=10000)
+      for i in range(10):
+          model = NMF(n_components=n_cluster, init='random', random_state=random_seed, max_iter=1000000)
           model.fit(cluster_input_train)
           score = model.reconstruction_err_
           if score > best_score:
               best_model = model
               model_specific_score = score
 
-      labels = np.argmax(best_model.transform(cluster_input_all), axis=1)
+      kmeans = KMeans(n_clusters=n_cluster, random_state=random_seed).fit(best_model.transform(cluster_input_all))
+      labels = kmeans.labels_
 
   df['group'] = labels
   df.to_csv(csv_path, index=True)
