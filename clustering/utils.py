@@ -178,7 +178,8 @@ def get_cluster_data(n_cluster=2, method='gmm', cov_type='full', cluster_input_d
       model_specific_score = model.bic(answers_train)
       df['group_prob'] = pd.DataFrame(model.predict_proba(answers)).max(axis=1)
     
-    df['group'] = model.predict(answers)  
+    labels = model.predict(answers)
+    df['group'] = labels
     df.to_csv(csv_path, index=False)
 
   labels = df['group'].to_numpy()
