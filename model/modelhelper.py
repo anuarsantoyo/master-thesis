@@ -109,12 +109,12 @@ def calc_poisson_loss(expected, observed):
     return -sum/(i+1)
 
 def calc_negative_binomnial_loss(expected, observed, phi):
-    sum = 0
+    ll = 0
     for i, val in enumerate(expected):
-        mu = val
-        k = observed[i]
-        sum += nbinom.pmf(k, mu, phi)
-    return -sum/(i + 1)
+        probs = val + (val**2)/phi
+        nb = torch.distributions.negative_binomial.NegativeBinomial(val, probs=probs, logits=None, validate_args=None)
+        ll += nb.log_prob(observed[i])
+    return -ll/(i + 1)
 
 
 def calc_prior_loss(dict_param, device, dtype):
