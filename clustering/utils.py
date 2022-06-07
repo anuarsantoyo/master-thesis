@@ -80,8 +80,7 @@ dict_combination = {
                             'Q6_6_clear_information_on_advice_reason', 'Q6_8_advices_enough_for_prevention', 'Q6_9_trust_political_strategy'],
     'F2_applicability_usefullness_advice': ['Q2_1_easy_to_follow_advice', 'Q2_2_can_follow_advice_if_wanted', 'Q2_3_if_follow_advice_safe', 'Q2_4_if_follow_advice_others_safe'],
     'F3_behaviour_others': ['Q5_1_others_took_distance', 'Q5_2_others_follow_advice'],
-    'F4_consequence_advice': ['Q2_5_follow_advice_relationships_impared', 'Q2_6_follow_advice_life_degraded', 'Q6_7_advice_limits_daily_activities'],
-    'F5_perceived_threat': ['Q1_1_feel_exposed', 'Q1_2_covid_is_threat', 'Q6_1_sanctions_are_too_harsh', 'Q6_3_others_can_avoid_spreading']}
+    'F4_consequence_advice': ['Q2_5_follow_advice_relationships_impared', 'Q2_6_follow_advice_life_degraded', 'Q6_7_advice_limits_daily_activities']} #,'F5_perceived_threat': ['Q1_1_feel_exposed', 'Q1_2_covid_is_threat', 'Q6_1_sanctions_are_too_harsh', 'Q6_3_others_can_avoid_spreading']
     
 
 dict_combination_original = {
@@ -133,7 +132,7 @@ def get_cluster_input_data_new(scaler = MinMaxScaler(), data='fa_data', start_tr
       scaler = None
 
   elif data == 'fa_data':
-      data_path = 'data/preprocessing/dim_reduction/220531_fa_data.csv'
+      data_path = 'data/preprocessing/dim_reduction/220531_fa_data_test.csv'
       cluster_input_cols = factor_cols
 
 
@@ -179,7 +178,8 @@ def get_cluster_data(n_cluster=2, method='gmm', cov_type='full', cluster_input_d
       model_specific_score = model.bic(answers_train)
       df['group_prob'] = pd.DataFrame(model.predict_proba(answers)).max(axis=1)
     
-    df['group'] = model.predict(answers)  
+    labels = model.predict(answers)
+    df['group'] = labels
     df.to_csv(csv_path, index=False)
 
   labels = df['group'].to_numpy()
