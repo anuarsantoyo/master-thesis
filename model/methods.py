@@ -86,7 +86,7 @@ class Net(nn.Module):
         x = F.relu(self.fc2(x))
         x = F.relu(self.fc3(x))
         x = self.fc4(x)
-        return  torch.tanh(x*3-1.5) + 1 #F.relu(x) # torch.sigmoid(x) #
+        return  F.relu(x) # torch.sigmoid(x) #torch.tanh(x*3-1.5) + 1 #
 
 
 class TwoClusterNN:
@@ -113,7 +113,7 @@ class TwoClusterNN:
         return reg_loss
 
     def _get_input_data(self, start, end):
-        df_cluster = pd.read_csv('data/clustering/220606_percentage_noncareful.csv', parse_dates=['date'])
+        df_cluster = pd.read_csv('data/clustering/220606_percentage_noncareful_5.csv', parse_dates=['date'])
         df_cluster['percentage'] = df_cluster['percentage'].rolling(7).mean()
         time_period = (df_cluster['date'] >= start) & (df_cluster['date'] < end)
         input_data = df_cluster.loc[time_period]['percentage'].copy()
@@ -148,7 +148,7 @@ class TwoClusterLinear:
         return torch.tensor(0, device=self.device, dtype=self.dtype)
 
     def _get_input_data(self, start, end):
-        df_cluster = pd.read_csv('data/clustering/220606_percentage_noncareful.csv', parse_dates=['date'])
+        df_cluster = pd.read_csv('data/clustering/220606_percentage_noncareful_7.csv', parse_dates=['date'])
         df_cluster['percentage'] = df_cluster['percentage'].rolling(7).mean()
         df_cluster['percentage'] = (df_cluster['percentage'] - df_cluster['percentage'].min()) / (
                 df_cluster['percentage'].max() - df_cluster['percentage'].min())
