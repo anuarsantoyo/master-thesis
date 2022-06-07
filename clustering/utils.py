@@ -132,7 +132,7 @@ def get_cluster_input_data_new(scaler = MinMaxScaler(), data='fa_data', start_tr
       scaler = None
 
   elif data == 'fa_data':
-      data_path = 'data/preprocessing/dim_reduction/220531_fa_data_test.csv'
+      data_path = 'data/preprocessing/dim_reduction/220531_fa_data.csv'
       cluster_input_cols = factor_cols
 
 

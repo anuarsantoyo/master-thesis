@@ -86,7 +86,7 @@ class Net(nn.Module):
         x = F.relu(self.fc2(x))
         x = F.relu(self.fc3(x))
         x = self.fc4(x)
-        return  F.relu(x) # torch.sigmoid(x) #torch.tanh(x*3-1.5) + 1
+        return  torch.tanh(x*3-1.5) + 1 #F.relu(x) # torch.sigmoid(x) #
 
 
 class TwoClusterNN:

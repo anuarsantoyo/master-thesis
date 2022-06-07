@@ -14,7 +14,7 @@ import numpy as np
 from scipy.stats import poisson, nbinom
 
 # Details Model Parameter
-dict_model_param = {'lower': {'R0': 0.001, 'phi': 0, 'sigma': 0.001, 'alpha': 0.001},
+dict_model_param = {'lower': {'R0': 0.001, 'phi': 0.001, 'sigma': 0.001, 'alpha': 0.001},
                     'upper': {'R0': 3, 'phi': 50, 'sigma': 0.5, 'alpha': 0.05},
                     'value': {'R0': 1.5, 'phi': 25, 'sigma': 0.1, 'alpha': 0.028},
                     'scale': {'R0': 1, 'phi': 10, 'sigma': 0.02, 'alpha': 0.002}}
@@ -37,7 +37,6 @@ def transform_prime_variables(dict_param):
   for key in dict_param['real_values'].keys():
     dict_param['real_values'][key] = bij_transform(dict_param['prime_values'][key], dict_model_param['lower'][key], dict_model_param['upper'][key])
   return dict_param
-  
 
 # Initialize Model Parameter
 def initialize_prime_param(param, device, dtype):
@@ -113,7 +112,7 @@ def calc_negative_binomnial_loss(expected, observed, phi):
     for i, val in enumerate(expected):
         probs = val + (val**2)/phi
         nb = torch.distributions.negative_binomial.NegativeBinomial(val, probs=probs, logits=None, validate_args=None)
-        ll += nb.log_prob(observed[i])
+        ll += nb.log_prob(observed[i].int())
     return -ll/(i + 1)
 
 
