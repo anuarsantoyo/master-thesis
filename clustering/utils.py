@@ -107,10 +107,10 @@ def get_factor_cols():
     return factor_cols
 
 
-def get_preprocessed_data(data_path='data/preprocessing/220427_preprocessed_data_without_imputation.csv', impute=True, impute_cols=behaviour_cols, start='2020-05-28', end='2021-12-02'):
+def get_preprocessed_data(data_path='data/preprocessing/preprocessed_data_without_imputation.csv', impute=True, impute_cols=behaviour_cols, start='2020-05-28', end='2021-12-02'):
     df = pd.read_csv(data_path)
     df.date = pd.to_datetime(df.date, format='%Y-%m-%d')
-    df = df[(df.date > start) & (df.date < end)]
+    df = df[(df.date >= start) & (df.date < end)]
     df.reset_index(inplace=True, drop=True)
     if impute:
         thresh_drop = int(len(impute_cols) * 0.9)
