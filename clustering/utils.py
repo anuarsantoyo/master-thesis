@@ -6,7 +6,7 @@ from sklearn.mixture import GaussianMixture
 from sklearn.cluster import KMeans
 from sklearn.decomposition import NMF
 
-behaviour_cols_with_contacts = ['Q1_1_feel_exposed',
+behaviour_cols_original = ['Q1_1_feel_exposed',
  'Q1_2_covid_is_threat',
  'Q2_1_easy_to_follow_advice',
  'Q2_2_can_follow_advice_if_wanted',
