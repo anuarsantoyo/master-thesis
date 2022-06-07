@@ -93,6 +93,7 @@ class TwoClusterNN:
     def __init__(self, n_observations=None, device=None, dtype=None):
         self.cluster_percentage_test = None
         self.cluster_percentage_train = None
+        self.cluster_percentage = None
         self.device = device
         self.dtype = dtype
         self.n_observations = n_observations
@@ -112,19 +113,19 @@ class TwoClusterNN:
             reg_loss += param.norm(2) ** 2
         return reg_loss
 
-    def _get_input_data(self, start, end):
+    def set_cluster_percentage(self, start, end, split_date):
         df_cluster = pd.read_csv('data/clustering/220606_percentage_noncareful_5.csv', parse_dates=['date'])
         df_cluster['percentage'] = df_cluster['percentage'].rolling(7).mean()
         time_period = (df_cluster['date'] >= start) & (df_cluster['date'] < end)
         input_data = df_cluster.loc[time_period]['percentage'].copy()
         input_data = (input_data - input_data.min()) / (input_data.max() - input_data.min())
-        return input_data.to_numpy()
-    
-    def set_cluster_train(self, start, end):
-        self.cluster_percentage_train = self._get_input_data(start, end)
-
-    def set_cluster_test(self, start, end):
-        self.cluster_percentage_test = self._get_input_data(start, end)
+        self.cluster_percentage = input_data.to_numpy()
+        
+        if split_date:
+            split_index = df_cluster[df_cluster['date'] == split_date].index[0] - df_cluster[df_cluster['date'] == start].index[0]
+            self.cluster_percentage_train = self.cluster_percentage[:split_index]
+            self.cluster_percentage_test = self.cluster_percentage[split_index:]
+            
 
 class TwoClusterLinear:
     def __init__(self, n_observations=None, device=None, dtype=None):
