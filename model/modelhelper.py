@@ -16,7 +16,7 @@ from scipy.stats import poisson, nbinom
 # Details Model Parameter
 dict_model_param = {'lower': {'R0': 0.001, 'phi': 0.001, 'sigma': 0.001, 'alpha': 0.001},
                     'upper': {'R0': 3, 'phi': 50, 'sigma': 0.5, 'alpha': 0.05},
-                    'value': {'R0': 1.5, 'phi': 25, 'sigma': 0.1, 'alpha': 0.028},
+                    'value': {'R0': 1.5, 'phi': 25, 'sigma': 0.1, 'alpha': 0.028}, #0.1, 0.02
                     'scale': {'R0': 1, 'phi': 10, 'sigma': 0.02, 'alpha': 0.002}}
 
 def get_dict_model_param():
