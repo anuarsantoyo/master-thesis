@@ -113,7 +113,7 @@ def calc_negative_binomnial_loss(expected, observed, phi):
     for i, val in enumerate(expected):
         probs = val + (val**2)/phi
         nb = torch.distributions.negative_binomial.NegativeBinomial(val, probs=probs, logits=None, validate_args=None)
-        ll += nb.log_prob(observed[i])
+        ll += nb.log_prob(observed[i].int())
     return -ll/(i + 1)
 
 
