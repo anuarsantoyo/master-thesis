@@ -100,12 +100,11 @@ def calc_mse(expected, observed):
   return msr
 
 def calc_poisson_loss(expected, observed):
-    sum = 0
+    ll = 0
     for i, val in enumerate(expected):
-        mu = val
-        k = observed[i]
-        sum += poisson.pmf(k, mu)
-    return -sum/(i+1)
+        poisson = torch.distributions.poisson.Poisson(val)
+        ll += poisson.log_prob(observed[i].int())
+    return -ll/(i + 1)
 
 def calc_negative_binomnial_loss(expected, observed, phi):
     ll = 0
