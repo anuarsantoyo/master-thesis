@@ -5,42 +5,6 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.mixture import GaussianMixture
 from sklearn.cluster import KMeans
 from sklearn.decomposition import NMF
-
-behaviour_cols_original = ['Q1_1_feel_exposed',
- 'Q1_2_covid_is_threat',
- 'Q2_1_easy_to_follow_advice',
- 'Q2_2_can_follow_advice_if_wanted',
- 'Q2_3_if_follow_advice_safe',
- 'Q2_4_if_follow_advice_others_safe',
- 'Q2_5_follow_advice_relationships_impared',
- 'Q2_6_follow_advice_life_degraded',
- 'Q3_1_aware_hand_hygiene',
- 'Q3_2_avoid_contact',
- 'Q3_3_ensure_frequent_cleaning',
- 'Q3_4_avoid_risk_groups',
- 'Q3_5_keep_distance',
- 'Q3_6_avoid_crowds',
- 'Q3_7_minimize_activities_w_contact',
- 'Q3b_1_sneeze_sleeve',
- 'Q4_1_nr_contact_nonhouse_family',
- 'Q4_2_nr_contact_colleagues',
- 'Q4_3_nr_contact_friends',
- 'Q4_4_nr_contact_strangers',
- 'Q5_1_others_took_distance',
- 'Q5_2_others_follow_advice',
- 'Q5_3_others_not_care_spreading',
- 'Q5_4_yourself_kept_distance',
- 'Q5_5_feel_urge_scold',
- 'Q6_1_sanctions_are_too_harsh',
- 'Q6_2_advices_important',
- 'Q6_3_others_can_avoid_spreading',
- 'Q6_4_advices_create_fair_burden_dristribution',
- 'Q6_5_ownership_of_advice',
- 'Q6_6_clear_information_on_advice_reason',
- 'Q6_7_advice_limits_daily_activities',
- 'Q6_8_advices_enough_for_prevention',
- 'Q6_9_trust_political_strategy']
- 
  
 behaviour_cols = ['Q1_1_feel_exposed',
  'Q1_2_covid_is_threat',
@@ -83,18 +47,6 @@ dict_combination = {
     'F4_consequence_advice': ['Q2_5_follow_advice_relationships_impared', 'Q2_6_follow_advice_life_degraded', 'Q6_7_advice_limits_daily_activities']} #,    'F5_perceived_threat': ['Q1_1_feel_exposed', 'Q1_2_covid_is_threat', 'Q6_1_sanctions_are_too_harsh', 'Q6_3_others_can_avoid_spreading']
     
 
-dict_combination_original = {
-    'F0_cautious_behaviour': ['Q3_1_aware_hand_hygiene', 'Q3_2_avoid_contact', 'Q3_3_ensure_frequent_cleaning',
-    'Q3_4_avoid_risk_groups', 'Q3_5_keep_distance', 'Q3_6_avoid_crowds', 'Q3_7_minimize_activities_w_contact', 'Q5_4_yourself_kept_distance'],
-    'F1_perception_advice': ['Q6_2_advices_important', 'Q6_4_advices_create_fair_burden_dristribution', 'Q6_5_ownership_of_advice',
-                            'Q6_6_clear_information_on_advice_reason', 'Q6_8_advices_enough_for_prevention', 'Q6_9_trust_political_strategy'],
-    'F2_applicability_usefullness_advice': ['Q2_1_easy_to_follow_advice', 'Q2_2_can_follow_advice_if_wanted', 'Q2_3_if_follow_advice_safe', 'Q2_4_if_follow_advice_others_safe'],
-    'F3_behaviour_others': ['Q5_1_others_took_distance', 'Q5_2_others_follow_advice'],
-    'F4_consequence_advice': ['Q2_5_follow_advice_relationships_impared', 'Q2_6_follow_advice_life_degraded', 'Q6_7_advice_limits_daily_activities'],
-    'F5_no_contacts': ['Q4_1_nr_contact_nonhouse_family', 'Q4_2_nr_contact_colleagues', 'Q4_3_nr_contact_friends', 'Q4_4_nr_contact_strangers'],
-    'F6_perceived_threat': ['Q1_1_feel_exposed', 'Q1_2_covid_is_threat']}
- 
-
 def get_behaviour_cols():
     return behaviour_cols
 
@@ -124,7 +76,7 @@ def get_preprocessed_data(data_path='data/preprocessing/preprocessed_data_withou
 
 def get_cluster_input_data(scaler = MinMaxScaler(), data='fa_data', start='2020-08-01', end='2021-02-01', start_train='2020-05-28', end_train='2021-12-02'):
   if data == 'pca_data':
-      data_path = 'data/preprocessing/dim_reduction/220513_pca_data.csv'
+      data_path = 'data/preprocessing/dim_reduction/pca_data.csv'
       cluster_input_cols = []
       for i in np.arange(9):
         col_name = 'PC_' + str(i)
@@ -132,7 +84,7 @@ def get_cluster_input_data(scaler = MinMaxScaler(), data='fa_data', start='2020-
       scaler = None
 
   elif data == 'fa_data':
-      data_path = 'data/preprocessing/dim_reduction/220607_fa_data_5_factor.csv'
+      data_path = 'data/preprocessing/dim_reduction/fa_data.csv'
       cluster_input_cols = factor_cols
 
 
@@ -192,7 +144,7 @@ def get_cluster_data(n_cluster=2, method='gmm', cov_type='full', cluster_input_d
   
 def get_cluster_input_data_experiments(scaler = MinMaxScaler(), data='fa_data', start_train='2020-07-31', end_train='2020-12-01'): # Anuar here NNMF
   if data == 'pca_data':
-      data_path = 'data/preprocessing/dim_reduction/220513_pca_data.csv'
+      data_path = 'data/preprocessing/dim_reduction/pca_data_experiments.csv'
       cluster_input_cols = []
       for i in np.arange(9):
         col_name = 'PC_' + str(i)
@@ -200,7 +152,7 @@ def get_cluster_input_data_experiments(scaler = MinMaxScaler(), data='fa_data', 
       scaler = None
 
   elif data == 'fa_data':
-      data_path = 'data/preprocessing/dim_reduction/220531_fa_data.csv' #use extra short file to save time
+      data_path = 'data/preprocessing/dim_reduction/fa_data_experiments.csv' #use extra short file to save time
       cluster_input_cols = factor_cols
 
 
