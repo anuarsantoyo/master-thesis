@@ -148,7 +148,7 @@ class TwoClusterLinear:
         return torch.tensor(0, device=self.device, dtype=self.dtype)
 
     def _get_input_data(self, start, end):
-        df_cluster = pd.read_csv('data/clustering/220606_percentage_noncareful_7.csv', parse_dates=['date'])
+        df_cluster = pd.read_csv('data/clustering/220606_percentage_noncareful_5.csv', parse_dates=['date'])
         df_cluster['percentage'] = df_cluster['percentage'].rolling(7).mean()
         df_cluster['percentage'] = (df_cluster['percentage'] - df_cluster['percentage'].min()) / (
                 df_cluster['percentage'].max() - df_cluster['percentage'].min())
