@@ -134,12 +134,14 @@ def calc_prior_loss(dict_param, device, dtype):
 
 def get_model_input(start='2020-08-01', end='2021-02-01', split_date=None, path='data/clustering/220606_percentage_noncareful_5.csv', rolling_avg=7):
     df = pd.read_csv(path, parse_dates=['date'])
-    columns_list = df.columns.tolist().remove('date')
+    columns_list = df.columns.tolist()
+    columns_list.remove('date')
     for column in columns_list:
         df[column] = df[column].rolling(rolling_avg).mean()
     time_period = (df['date'] >= start) & (df['date'] < end)
     input_data = df.loc[time_period][columns_list].copy()
-    input_data = MinMaxScaler.fit_transform(input_data)
+    scaler = MinMaxScaler()
+    input_data = scaler.fit_transform(input_data)
 
     if split_date:
         split_index = df[df['date'] == split_date].index[0] - \

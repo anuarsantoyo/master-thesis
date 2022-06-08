@@ -71,12 +71,12 @@ import torch.nn as nn
 import torch.nn.functional as F
 import matplotlib.pyplot as plt
 
-class Net2(nn.Module):
-    def __init__(self, device=None, dtype=None):
+class Net(nn.Module):
+    def __init__(self, device=None, dtype=None, input_size=1):
         self.device = device
         self.dtype = dtype
-        super(Net2, self).__init__()
-        self.fc1 = nn.Linear(1, 6, device=self.device, dtype=self.dtype)
+        super(Net, self).__init__()
+        self.fc1 = nn.Linear(input_size, 6, device=self.device, dtype=self.dtype)
         self.fc2 = nn.Linear(6, 10, device=self.device, dtype=self.dtype)
         self.fc3 = nn.Linear(10, 4, device=self.device, dtype=self.dtype)
         self.fc4 = nn.Linear(4, 1, device=self.device, dtype=self.dtype)
@@ -89,15 +89,12 @@ class Net2(nn.Module):
         return F.relu(x)  # torch.sigmoid(x) #torch.tanh(x*3-1.5) + 1 #
 
 
-class TwoClusterNN:
-    def __init__(self, n_observations=None, device=None, dtype=None):
-        self.cluster_percentage_test = None
-        self.cluster_percentage_train = None
-        self.cluster_percentage = None
+class NN:
+    def __init__(self, n_observations=None, device=None, dtype=None, input_size=1):
         self.device = device
         self.dtype = dtype
         self.n_observations = n_observations
-        self.model = Net2(device=self.device, dtype=self.dtype)
+        self.model = Net(device=self.device, dtype=self.dtype, input_size=input_size)
 
     def get_parameters(self):
         return list(set(self.model.parameters()))
@@ -114,10 +111,8 @@ class TwoClusterNN:
         return reg_loss
             
 
-class TwoClusterLinear:
+class Linear:
     def __init__(self, n_observations=None, device=None, dtype=None):
-        self.cluster_percentage_test = None
-        self.cluster_percentage_train = None
         self.device = device
         self.dtype = dtype
         self.n_observations = n_observations
