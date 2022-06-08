@@ -142,7 +142,7 @@ def get_cluster_data(n_cluster=2, method='gmm', cov_type='full', cluster_input_d
   
   
   
-def get_cluster_input_data_experiments(scaler = MinMaxScaler(), data='fa_data', start_train='2020-07-31', end_train='2020-12-01'): # Anuar here NNMF
+def get_cluster_input_data_experiments(scaler = MinMaxScaler(), data='fa_data', start_train='2020-08-01', end_train='2020-12-01'): # Anuar here NNMF
   if data == 'pca_data':
       data_path = 'data/preprocessing/dim_reduction/pca_data_experiments.csv'
       cluster_input_cols = []
@@ -158,7 +158,7 @@ def get_cluster_input_data_experiments(scaler = MinMaxScaler(), data='fa_data', 
 
   df = pd.read_csv(data_path)
   df.date = pd.to_datetime(df.date, format='%Y-%m-%d')
-  df_cluster_input = df[(df.date > start_train) & (df.date < end_train)].copy()
+  df_cluster_input = df[(df.date >= start_train) & (df.date < end_train)].copy()
   df_cluster_input.reset_index(inplace=True, drop=True)
   cluster_input_train = df_cluster_input[cluster_input_cols].to_numpy()
   cluster_input_all = df[cluster_input_cols].to_numpy()
@@ -171,7 +171,7 @@ def get_cluster_input_data_experiments(scaler = MinMaxScaler(), data='fa_data', 
   return cluster_input_train, cluster_input_all
 
 # Anuar here NNMF
-def get_cluster_data_experiments(n_cluster=2, method='gmm', cov_type='full', cluster_input_data='fa_data', start_train='2020-07-31', end_train='2020-12-01', random_seed=1, n_init=10):
+def get_cluster_data_experiments(n_cluster=2, method='gmm', cov_type='full', cluster_input_data='fa_data', start_train='2020-08-01', end_train='2020-12-01', random_seed=1, n_init=10):
 
   filename = method + '_' + str(n_cluster)
   if method == 'gmm':
