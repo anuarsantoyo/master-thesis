@@ -116,7 +116,7 @@ class LinearNet(nn.Module):
     def __init__(self, device=None, dtype=None, input_size=1):
         self.device = device
         self.dtype = dtype
-        super(Net, self).__init__()
+        super(LinearNet, self).__init__()
         self.fc1 = nn.Linear(input_size, 1, device=self.device, dtype=self.dtype)
     def forward(self, x):
         x = F.relu(self.fc1(x.float()))
