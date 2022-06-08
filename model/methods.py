@@ -91,16 +91,17 @@ class Net(nn.Module):
 
 class NN:
     def __init__(self, n_observations=None, device=None, dtype=None, input_size=1):
+        self.input_size = input_size
         self.device = device
         self.dtype = dtype
         self.n_observations = n_observations
-        self.model = Net(device=self.device, dtype=self.dtype, input_size=input_size)
+        self.model = Net(device=self.device, dtype=self.dtype, input_size=self.input_size)
 
     def get_parameters(self):
         return list(set(self.model.parameters()))
 
     def calculate_R(self, x):
-        x = torch.tensor(x, device=self.device, dtype=self.dtype).reshape(-1, 1)
+        x = torch.tensor(x, device=self.device, dtype=self.dtype).reshape(-1, self.input_size)
         R = self.model(x)
         return R
 
@@ -109,24 +110,35 @@ class NN:
         for param in self.model.parameters():
             reg_loss += param.norm(2) ** 2
         return reg_loss
-            
+
+
+class LinearNet(nn.Module):
+    def __init__(self, device=None, dtype=None, input_size=1):
+        self.device = device
+        self.dtype = dtype
+        super(Net, self).__init__()
+        self.fc1 = nn.Linear(input_size, 1, device=self.device, dtype=self.dtype)
+    def forward(self, x):
+        x = F.relu(self.fc1(x.float()))
+        return x  # torch.sigmoid(x) #torch.tanh(x*3-1.5) + 1 #
+
 
 class Linear:
-    def __init__(self, n_observations=None, device=None, dtype=None):
+    def __init__(self, n_observations=None, device=None, dtype=None, input_size=1):
+        self.input_size = input_size
         self.device = device
         self.dtype = dtype
         self.n_observations = n_observations
-        self.m = torch.tensor(0., device=device, dtype=dtype, requires_grad=True)
-        self.b = torch.tensor(0., device=device, dtype=dtype, requires_grad=True)
+        self.model = LinearNet(device=self.device, dtype=self.dtype, input_size=self.input_size)
 
     def get_parameters(self):
-        return [self.b, self.m]
+        return list(set(self.model.parameters()))
 
     def calculate_R(self, x):
-        x = torch.tensor(x, device=self.device, dtype=self.dtype)
-        R = self.m*x + self.b
+        x = torch.tensor(x, device=self.device, dtype=self.dtype).reshape(-1, self.input_size)
+        R = self.model(x)
         return R
 
     def calculate_loss(self):
-        return torch.tensor(0, device=self.device, dtype=self.dtype)
+        return torch.tensor(0.0, device=self.device, dtype=self.dtype)
 
