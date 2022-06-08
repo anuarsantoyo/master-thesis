@@ -71,11 +71,11 @@ import torch.nn as nn
 import torch.nn.functional as F
 import matplotlib.pyplot as plt
 
-class Net(nn.Module):
+class Net2(nn.Module):
     def __init__(self, device=None, dtype=None):
         self.device = device
         self.dtype = dtype
-        super(Net, self).__init__()
+        super(Net2, self).__init__()
         self.fc1 = nn.Linear(1, 6, device=self.device, dtype=self.dtype)
         self.fc2 = nn.Linear(6, 10, device=self.device, dtype=self.dtype)
         self.fc3 = nn.Linear(10, 4, device=self.device, dtype=self.dtype)
@@ -86,7 +86,7 @@ class Net(nn.Module):
         x = F.relu(self.fc2(x))
         x = F.relu(self.fc3(x))
         x = self.fc4(x)
-        return  F.relu(x) # torch.sigmoid(x) #torch.tanh(x*3-1.5) + 1 #
+        return F.relu(x)  # torch.sigmoid(x) #torch.tanh(x*3-1.5) + 1 #
 
 
 class TwoClusterNN:
@@ -97,7 +97,7 @@ class TwoClusterNN:
         self.device = device
         self.dtype = dtype
         self.n_observations = n_observations
-        self.model = Net(device=self.device, dtype=self.dtype)
+        self.model = Net2(device=self.device, dtype=self.dtype)
 
     def get_parameters(self):
         return list(set(self.model.parameters()))
@@ -112,19 +112,6 @@ class TwoClusterNN:
         for param in self.model.parameters():
             reg_loss += param.norm(2) ** 2
         return reg_loss
-
-    def set_cluster_percentage(self, start, end, split_date):
-        df_cluster = pd.read_csv('data/clustering/220606_percentage_noncareful_5.csv', parse_dates=['date'])
-        df_cluster['percentage'] = df_cluster['percentage'].rolling(7).mean()
-        time_period = (df_cluster['date'] >= start) & (df_cluster['date'] < end)
-        input_data = df_cluster.loc[time_period]['percentage'].copy()
-        input_data = (input_data - input_data.min()) / (input_data.max() - input_data.min())
-        self.cluster_percentage = input_data.to_numpy()
-        
-        if split_date:
-            split_index = df_cluster[df_cluster['date'] == split_date].index[0] - df_cluster[df_cluster['date'] == start].index[0]
-            self.cluster_percentage_train = self.cluster_percentage[:split_index]
-            self.cluster_percentage_test = self.cluster_percentage[split_index:]
             
 
 class TwoClusterLinear:
@@ -148,17 +135,3 @@ class TwoClusterLinear:
     def calculate_loss(self):
         return torch.tensor(0, device=self.device, dtype=self.dtype)
 
-    def _get_input_data(self, start, end):
-        df_cluster = pd.read_csv('data/clustering/220606_percentage_noncareful_5.csv', parse_dates=['date'])
-        df_cluster['percentage'] = df_cluster['percentage'].rolling(7).mean()
-        df_cluster['percentage'] = (df_cluster['percentage'] - df_cluster['percentage'].min()) / (
-                df_cluster['percentage'].max() - df_cluster['percentage'].min())
-        time_period = (df_cluster['date'] >= start) & (df_cluster['date'] < end)
-        input_data = df_cluster.loc[time_period]['percentage'].copy()
-        return input_data.to_numpy()
-
-    def set_cluster_train(self, start, end):
-        self.cluster_percentage_train = self._get_input_data(start, end)
-
-    def set_cluster_test(self, start, end):
-        self.cluster_percentage_test = self._get_input_data(start, end)
