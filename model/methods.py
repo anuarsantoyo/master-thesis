@@ -86,7 +86,7 @@ class Net(nn.Module):
         x = F.relu(self.fc2(x))
         x = F.relu(self.fc3(x))
         x = self.fc4(x)
-        return F.relu(x)  # torch.sigmoid(x) #torch.tanh(x*3-1.5) + 1 #
+        return F.relu(x)  # torch.tanh(x*3-1.5) + 1 #torch.sigmoid(x) #
 
 
 class NN:
@@ -108,7 +108,7 @@ class NN:
     def calculate_loss(self):
         reg_loss = 0
         for param in self.model.parameters():
-            reg_loss += param.norm(2) ** 2
+            reg_loss += param.norm(2).abs() #param.norm(2) ** 2
         return reg_loss
 
 
@@ -140,5 +140,9 @@ class Linear:
         return R
 
     def calculate_loss(self):
-        return torch.tensor(0.0, device=self.device, dtype=self.dtype)
+        reg_loss = 0
+        for param in self.model.parameters():
+            reg_loss += param.norm(2).abs() #param.norm(2) ** 2
+        return reg_loss
+        #return torch.tensor(0.0, device=self.device, dtype=self.dtype)
 
