@@ -132,8 +132,11 @@ def calc_prior_loss(dict_param, device, dtype):
   return -ll
 
 
-def get_model_input(start='2020-08-01', end='2021-02-01', split_date=None, path='data/clustering/220606_percentage_noncareful_5.csv', rolling_avg=7):
+def get_model_input(start='2020-08-01', end='2021-02-01', split_date=None, path='data/clustering/220606_percentage_noncareful_5.csv', rolling_avg=7, input_data_cols=None):
     df = pd.read_csv(path, parse_dates=['date'])
+    if input_data_cols != None:
+        cols_to_keep = input_data_cols + ['date']
+        df = df[cols_to_keep]
     columns_list = df.columns.tolist()
     columns_list.remove('date')
     for column in columns_list:
