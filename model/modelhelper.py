@@ -14,13 +14,16 @@ import numpy as np
 import pandas as pd
 from scipy.stats import poisson, nbinom
 from sklearn.preprocessing import MinMaxScaler
+import _pickle as cPickle
 
 # Details Model Parameter
 dict_model_param = {'lower': {'R0': 0.001, 'phi': 0.001, 'sigma': 0.001, 'alpha': 0.001},
-                    'upper': {'R0': 3, 'phi': 50, 'sigma': 0.5, 'alpha': 0.05},
+                    'upper': {'R0': 3, 'phi': 50, 'sigma': 0.5, 'alpha': 1},
                     'value': {'R0': 1.5, 'phi': 25, 'sigma': 0.1, 'alpha': 0.028},
                     'scale': {'R0': 1, 'phi': 10, 'sigma': 0.02, 'alpha': 0.002}}
 
+with open(r"data/modeling/weights_distribution/linear_param_norm.pickle", "rb") as input_file:
+    linear_params = cPickle.load(input_file)
 def get_dict_model_param():
     return dict_model_param
 
@@ -116,6 +119,22 @@ def calc_negative_binomnial_loss(expected, observed, phi):
         ll += nb.log_prob(observed[i].int())
     return -ll/(i + 1)
 
+
+def calc_prior_linear_loss(factor, parameter, device, dtype):
+    """Takes factor, parameter, value as an input and returns the prior loss."""
+    ll = torch.tensor(0.0, device=device, dtype=dtype)
+
+    mu, std = linear_params[str(factor)]['m']
+    mu = torch.tensor(mu, device=device, dtype=dtype)
+    std = torch.tensor(std, device=device, dtype=dtype)
+    ll += distributions.normal.Normal(loc=mu, scale=std).log_prob(parameter[0]).reshape(-1)[0]
+
+    mu, std = linear_params[str(factor)]['c']
+    mu = torch.tensor(mu, device=device, dtype=dtype)
+    std = torch.tensor(std, device=device, dtype=dtype)
+    ll += distributions.normal.Normal(loc=mu, scale=std).log_prob(parameter[1]).reshape(-1)[0]
+
+    return -ll
 
 def calc_prior_loss(dict_param, device, dtype):
   """Takes the dictionary of parameter as an input and calculates the prior loss.

@@ -16,8 +16,8 @@ df_dd = pd.read_csv('data/infection_to_hospitalization_delay.csv', sep=';', deci
 def epid_model(R, initial_newly_infected, alpha, device, dtype):
         n = R.size()[0]
 
-        si = torch.tensor(df_si['serial_interval'][0:n],dtype=dtype, device=device)
-        dd = torch.tensor(df_dd['delay_distribution'][0:n],dtype=dtype, device=device)
+        si = torch.tensor(df_si['serial_interval'][0:n], dtype=dtype, device=device)
+        dd = torch.tensor(df_dd['delay_distribution'][0:n], dtype=dtype, device=device)
 
         newly_infected = torch.zeros(n, dtype=dtype, device=device)
         

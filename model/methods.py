@@ -76,17 +76,17 @@ class Net(nn.Module):
         self.device = device
         self.dtype = dtype
         super(Net, self).__init__()
-        self.fc1 = nn.Linear(input_size, 6, device=self.device, dtype=self.dtype)
-        self.fc2 = nn.Linear(6, 10, device=self.device, dtype=self.dtype)
-        self.fc3 = nn.Linear(10, 4, device=self.device, dtype=self.dtype)
-        self.fc4 = nn.Linear(4, 1, device=self.device, dtype=self.dtype)
+        self.fc1 = nn.Linear(input_size, 5, device=self.device, dtype=self.dtype)
+        self.fc2 = nn.Linear(5, 1, device=self.device, dtype=self.dtype)
+        #self.fc3 = nn.Linear(10, 4, device=self.device, dtype=self.dtype)
+        #self.fc4 = nn.Linear(4, 1, device=self.device, dtype=self.dtype)
 
     def forward(self, x):
         x = F.relu(self.fc1(x.float()))
         x = F.relu(self.fc2(x))
-        x = F.relu(self.fc3(x))
-        x = self.fc4(x)
-        return F.relu(x)  # torch.tanh(x*3-1.5) + 1 #torch.sigmoid(x) #
+        #x = F.relu(self.fc3(x))
+        #x = self.fc4(x)
+        return x  #F.relu(x)  # torch.tanh(x*3-1.5) + 1 #torch.sigmoid(x) #
 
 
 class NN:
@@ -140,9 +140,9 @@ class Linear:
         return R
 
     def calculate_loss(self):
-        reg_loss = 0
+        '''reg_loss = 0
         for param in self.model.parameters():
             reg_loss += param.norm(2).abs() #param.norm(2) ** 2
-        return reg_loss
-        #return torch.tensor(0.0, device=self.device, dtype=self.dtype)
+        return reg_loss'''
+        return torch.tensor(0.0, device=self.device, dtype=self.dtype)
 
